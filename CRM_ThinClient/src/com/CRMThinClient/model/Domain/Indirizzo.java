@@ -15,6 +15,6 @@ public class Indirizzo {
 	
 	@Override
 	public String toString() {
-		return via+" "+civico+" "+citta+" "+cap+" "+provincia+" "+paese;
+		return "via: "+via+" "+civico+" "+citta+" "+cap+" "+provincia+" "+paese;
 	}
 }

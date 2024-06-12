@@ -21,6 +21,6 @@ public class Appuntamento {
 	
 	@Override
 	public String toString(){
-		return codiceCliente+" "+sede+"\n"+dataAppuntamento.toString()+"\n"+orarioAppuntamento.toString();
+		return "codice cliente: "+codiceCliente+" "+"sede: "+sede+"\n"+"data appuntamento: "+dataAppuntamento.toString()+"\n"+"orario appuntamento: "+orarioAppuntamento.toString();
 	}
 }

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Scanner;
 
+import com.CRMThinClient.main.Main;
 import com.CRMThinClient.model.DAO.ConnectionFactory;
 import com.CRMThinClient.model.Domain.Appuntamento;
 import com.CRMThinClient.model.Domain.Data;
@@ -39,41 +40,37 @@ public class OperatoreController implements Controller{
 	}
 
 	public void writeNote() {
-		try(Scanner scanner= new Scanner(System.in)){
-			System.out.println("Inserisci codice offerta");
-			String codOfferta=scanner.nextLine();
-			System.out.println("Inserisci codice cliente");
-			String codCliente=scanner.nextLine();
-			System.out.println("Inserisci codice operatore");
-			String codOperatore=scanner.nextLine();
-			Nota nota= new Nota(codOfferta,codCliente,codOperatore);
-			System.out.println("Inserisci esito chiamata");
-			nota.inserisciEsito(scanner.nextLine());
-			System.out.println("Vuoi allegare un appuntamento? Digita 1 per Si, resto No");
-			if(scanner.nextInt()==1) {
-				Appuntamento appuntamento= new Appuntamento(codCliente);
-				System.out.println("Inserisci sede");
-				appuntamento.inserisciSede(scanner.nextLine());
-				Data data= new Data();
-				System.out.println("Inserisci data Formato:gg-mm-aaaa");
-				data.inserisciData(scanner.nextLine());
-				System.out.println("Inserisci ora appuntamento");
-				int ore= scanner.nextInt();
-				System.out.println("Inserisci minuti appuntamento");
-				int minuti= scanner.nextInt();
-				Orario orario= new Orario();
-				orario.inserisciOrario(ore,minuti);
-				appuntamento.inserisciDataEOrario(data, orario);
-				nota.allegaAppuntamento(appuntamento);
-			}
-			OperatoreView.riepilogoNota(nota.toString());
-			System.out.println("Vuoi confermare?Digita 1 per Si, resto per No");
-			if(scanner.nextInt()==1) {
-				//PARTE DAO SALVATAGGIO NOTA DA IMPLEMENTARE
-			}
-			else {
-				System.out.println("Nota scartata!");
-			}
+		Scanner scanner= Main.getScanner();
+		System.out.println("Inserisci codice offerta: ");
+		String codOfferta=scanner.nextLine();
+		System.out.println("Inserisci codice cliente: ");
+		String codCliente=scanner.nextLine();
+		System.out.println("Inserisci codice operatore: ");
+		String codOperatore=scanner.nextLine();
+		Nota nota= new Nota(codOfferta,codCliente,codOperatore);
+		System.out.println("Inserisci esito chiamata: ");
+		nota.inserisciEsito(scanner.nextLine());
+		System.out.println("Vuoi allegare un appuntamento? Si/No: ");
+		if(scanner.nextLine().equalsIgnoreCase("Si")) {
+			Appuntamento appuntamento= new Appuntamento(codCliente);
+			System.out.println("Inserisci sede: ");
+			appuntamento.inserisciSede(scanner.nextLine());
+			Data data= new Data();
+			System.out.println("Inserisci data Formato:gg-mm-aaaa: ");
+			data.inserisciData(scanner.nextLine());
+			System.out.println("Inserisci orario appuntamento Formato: hh:mm : ");
+			Orario orario= new Orario();
+			orario.inserisciOrario(scanner.nextLine());
+			appuntamento.inserisciDataEOrario(data, orario);
+			nota.allegaAppuntamento(appuntamento);
+		}
+		OperatoreView.riepilogoNota(nota.toString());
+		System.out.println("Vuoi confermare? Si/No: ");
+		if(scanner.nextLine().equalsIgnoreCase("Si")) {
+			saveNote(nota);
+		}
+		else {
+			System.out.println("Nota scartata!");
 		}
 	}
 
@@ -82,4 +79,8 @@ public class OperatoreController implements Controller{
 		//CICLO CHIAMA VIEW OPERATORE CHE RESTITUISCE NOTE!
 	}
 
+	private void saveNote(Nota nota) {
+		//PARTE DAO SALVATAGGIO NOTA DA IMPLEMENTARE
+	}
+	
 }

@@ -26,6 +26,10 @@ public class Nota {
 	
 	@Override
 	public String toString() {
-		return codiceOfferta+" "+codiceCliente+" "+codiceOperatore+"\n"+esito+"\n"+dataDiModifica+"\n"+appuntamento.toString();
+		String str="codice offerta: "+codiceOfferta+" "+"codice cliente: "+codiceCliente+" "+"codice operatore: "+codiceOperatore+"\n"+"esito: "+esito+"\n"+"data di modifica: "+dataDiModifica.toString();
+		if(appuntamento!=null) {
+			str= str+"\n"+"Appuntamento:\n"+appuntamento.toString();
+		}
+		return str;
 	}
 }

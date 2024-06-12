@@ -3,6 +3,8 @@ package com.CRMThinClient.view;
 import java.io.IOException;
 import java.util.Scanner;
 
+import com.CRMThinClient.main.Main;
+
 public class OperatoreView {
 
 	public static int showMenu() throws IOException {
@@ -15,22 +17,23 @@ public class OperatoreView {
         System.out.println("3) Quit");
 
 
-        try (Scanner input = new Scanner(System.in)) {
-			int choice = 0;
-			while (true) {
-			    System.out.print("Please enter your choice: ");
-			    choice = input.nextInt();
-			    if (choice >= 1 && choice <= 3) {
-			        break;
-			    }
-			    System.out.println("Invalid option");
-			}
-
-			return choice;
+        Scanner input= Main.getScanner();
+		int choice = 0;
+		while (true) {
+			 System.out.print("Please enter your choice: ");
+			 choice = Integer.parseInt(input.nextLine());
+			 if (choice >= 1 && choice <= 3) {
+			     break;
+			 }
+			 System.out.println("Invalid option");
 		}
+		return choice;
     }
 	
 	public static void riepilogoNota(String s) {
-		System.out.println("s");
+		System.out.println("********************************");
+		System.out.println("*     RIEPILOGO     *");
+		System.out.println(s);
+		System.out.println("********************************");
 	}
 }

@@ -25,7 +25,7 @@ public class Data {
 	
 	@Override
 	public String toString() {
-		 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd,MM,yyyy");
+		 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 	     return data.format(formatter);
 	}
 }
