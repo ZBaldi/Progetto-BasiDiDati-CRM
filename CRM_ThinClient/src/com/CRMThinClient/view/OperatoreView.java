@@ -14,7 +14,8 @@ public class OperatoreView {
         System.out.println("*** What should I do for you? ***\n");
         System.out.println("1) Show notes associated with a customer");
         System.out.println("2) Write a Note associated with a customer");
-        System.out.println("3) Quit");
+        System.out.println("3) Insert accepted offer");
+        System.out.println("4) Quit");
 
 
         Scanner input= Main.getScanner();
@@ -22,7 +23,7 @@ public class OperatoreView {
 		while (true) {
 			 System.out.print("Please enter your choice: ");
 			 choice = Integer.parseInt(input.nextLine());
-			 if (choice >= 1 && choice <= 3) {
+			 if (choice >= 1 && choice <= 4) {
 			     break;
 			 }
 			 System.out.println("Invalid option");
@@ -33,7 +34,14 @@ public class OperatoreView {
 	public static void riepilogoNota(String s) {
 		System.out.println("********************************");
 		System.out.println("*     RIEPILOGO     *");
+		System.out.println("********************************\n");
 		System.out.println(s);
-		System.out.println("********************************");
+	}
+
+	public static void riepilogoOffertaAccettata(String s) {
+		System.out.println("***************************************************");
+		System.out.println("*    RIEPILOGO INSERIMENTO OFFERTA ACCETTATA    *");
+		System.out.println("***************************************************\n");
+		System.out.println(s);
 	}
 }

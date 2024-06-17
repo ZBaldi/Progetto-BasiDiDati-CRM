@@ -30,20 +30,14 @@ public class SegreteriaController implements Controller{
 
             switch(choice) {
                 case 1 -> insertOffer();
-                case 2 -> saveAcceptedOffer();
-                case 3 -> doReport();
-                case 4 -> System.exit(0);
+                case 2 -> doReport();
+                case 3 -> System.exit(0);
                 default -> throw new RuntimeException("Invalid choice");
             }
         }
 	}
 
 	public Object doReport() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Object saveAcceptedOffer() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -57,9 +51,16 @@ public class SegreteriaController implements Controller{
 		Offerta offerta= new Offerta(codiceOfferta,nomeOfferta);
 		System.out.println("Inserisci Descrizione Offerta: ");
 		offerta.inserisciDescrizione(scanner.nextLine());
-		System.out.println("Inserisci Data di Scadenza Offerta Formato: gg-mm-aaaa: ");
 		Data data=new Data();
-		data.inserisciData(scanner.nextLine());
+		while(true) {
+			System.out.println("Inserisci Data di Scadenza Offerta Formato: gg-mm-aaaa: ");
+			try{
+				data.inserisciData(scanner.nextLine());
+				break;
+			}catch(Exception e) {
+				System.out.println("Riprova!");
+			}
+		}
 		offerta.inserisciScadenza(data);
 		SegreteriaView.riepilogoOfferta(offerta.toString());
 		System.out.println("Vuoi confermare? Si/No: ");
@@ -72,8 +73,7 @@ public class SegreteriaController implements Controller{
 	}
 
 	private void saveOffer(Offerta offerta) {
-		// TODO Auto-generated method stub
-		
+		// PARTE COMUNICANTE CON DAO
 	}
 
 }

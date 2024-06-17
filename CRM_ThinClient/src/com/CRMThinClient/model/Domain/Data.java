@@ -7,14 +7,15 @@ import java.time.format.DateTimeParseException;
 public class Data {
 	private LocalDate data;
 	
-	public void inserisciData(String str) {
+	public void inserisciData(String str) throws Exception {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         while(true) {
         	try {
         		data = LocalDate.parse(str, formatter);
         		break;
         	} catch (DateTimeParseException e) {
-        		System.out.println("Data non valida! Riprova.");
+        		System.out.println("Data non valida!");
+        		throw new Exception();
         	}
         }
 	}

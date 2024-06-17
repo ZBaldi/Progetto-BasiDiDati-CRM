@@ -9,6 +9,7 @@ import com.CRMThinClient.model.DAO.ConnectionFactory;
 import com.CRMThinClient.model.Domain.Appuntamento;
 import com.CRMThinClient.model.Domain.Data;
 import com.CRMThinClient.model.Domain.Nota;
+import com.CRMThinClient.model.Domain.OffertaAccettata;
 import com.CRMThinClient.model.Domain.Orario;
 import com.CRMThinClient.model.Domain.Role;
 import com.CRMThinClient.view.OperatoreView;
@@ -33,17 +34,51 @@ public class OperatoreController implements Controller{
             switch(choice) {
                 case 1 -> showNotes();
                 case 2 -> writeNote();
-                case 3 -> System.exit(0);
+                case 3 -> insertAcceptedOffer();
+                case 4 -> System.exit(0);
                 default -> throw new RuntimeException("Invalid choice");
             }
         }
+	}
+
+	public void insertAcceptedOffer() {
+		Scanner scanner= Main.getScanner();
+		System.out.println("Inserisci codice offerta: ");
+		String codOfferta=scanner.nextLine();
+		System.out.println("Inserisci codice fiscale cliente: ");
+		String codCliente=scanner.nextLine();
+		System.out.println("Inserisci codice operatore: ");
+		String codOperatore=scanner.nextLine();
+		Data data= new Data();
+		while(true) {
+			System.out.println("Inserisci data di accettazione Formato:gg-mm-aaaa: ");
+			try{
+				data.inserisciData(scanner.nextLine());
+				break;
+			}catch(Exception e) {
+				System.out.println("Riprova!");
+			}
+		}
+		OffertaAccettata offerta= new OffertaAccettata(codOperatore,codCliente,codOfferta,data);
+		OperatoreView.riepilogoOffertaAccettata(offerta.toString());
+		System.out.println("Vuoi confermare? Si/No: ");
+		if(scanner.nextLine().equalsIgnoreCase("Si")) {
+			saveAcceptedOffer(offerta);
+		}
+		else {
+			System.out.println("Inserimento annullato!");
+		}
+	}
+
+	private void saveAcceptedOffer(OffertaAccettata offerta) {
+		// INTERAGISCE CON IL DAO DA IMPLEMENTARE		
 	}
 
 	public void writeNote() {
 		Scanner scanner= Main.getScanner();
 		System.out.println("Inserisci codice offerta: ");
 		String codOfferta=scanner.nextLine();
-		System.out.println("Inserisci codice cliente: ");
+		System.out.println("Inserisci codice fiscale cliente: ");
 		String codCliente=scanner.nextLine();
 		System.out.println("Inserisci codice operatore: ");
 		String codOperatore=scanner.nextLine();
@@ -56,11 +91,25 @@ public class OperatoreController implements Controller{
 			System.out.println("Inserisci sede: ");
 			appuntamento.inserisciSede(scanner.nextLine());
 			Data data= new Data();
-			System.out.println("Inserisci data Formato:gg-mm-aaaa: ");
-			data.inserisciData(scanner.nextLine());
-			System.out.println("Inserisci orario appuntamento Formato: hh:mm : ");
+			while(true) {
+				System.out.println("Inserisci data appuntamento Formato:gg-mm-aaaa: ");
+				try{
+					data.inserisciData(scanner.nextLine());
+					break;
+				}catch(Exception e) {
+					System.out.println("Riprova!");
+				}
+			}
 			Orario orario= new Orario();
-			orario.inserisciOrario(scanner.nextLine());
+			while(true) {
+				System.out.println("Inserisci orario appuntamento Formato: hh:mm : ");
+				try{
+					orario.inserisciOrario(scanner.nextLine());
+					break;
+				}catch(Exception e) {
+					System.out.println("Riprova!");
+				}
+			}
 			appuntamento.inserisciDataEOrario(data, orario);
 			nota.allegaAppuntamento(appuntamento);
 		}
