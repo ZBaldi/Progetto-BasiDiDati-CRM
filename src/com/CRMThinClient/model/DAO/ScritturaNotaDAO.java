@@ -13,7 +13,7 @@ import com.CRMThinClient.model.Domain.Orario;
 public class ScritturaNotaDAO implements GenericProcedureDAO<Void>{
 
 	@Override
-	public Void execute(Object... params) throws DAOException, SQLException {
+	public Void execute(Object... params) throws DAOException{
 		Nota nota= (Nota) params[0];
 		Appuntamento appuntamento= nota.getAppuntamento();
 		String sede=null;
