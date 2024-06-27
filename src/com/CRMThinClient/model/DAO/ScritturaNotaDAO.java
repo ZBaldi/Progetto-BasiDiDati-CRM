@@ -37,7 +37,7 @@ public class ScritturaNotaDAO implements GenericProcedureDAO<Void>{
 			cs.setTime(8, orarioAppuntamento.getTimeForDBMS());
 			cs.execute();
 		}catch(SQLException e) {
-			throw new DAOException("Errore scrittura nota: "+e.getMessage());
+			throw new DAOException("Errore scrittura nota nel DB: "+e.getMessage());
 		}
 		return null;
 	}

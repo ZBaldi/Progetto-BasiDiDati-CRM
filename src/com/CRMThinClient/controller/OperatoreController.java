@@ -2,16 +2,24 @@ package com.CRMThinClient.controller;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Scanner;
 
 import com.CRMThinClient.exception.DAOException;
 import com.CRMThinClient.main.Main;
 import com.CRMThinClient.model.DAO.ConnectionFactory;
 import com.CRMThinClient.model.DAO.InserisciOffertaDAO;
+import com.CRMThinClient.model.DAO.ListaNoteDAO;
+import com.CRMThinClient.model.DAO.MostraClientiDAO;
+import com.CRMThinClient.model.DAO.MostraEmailDAO;
+import com.CRMThinClient.model.DAO.MostraOfferteDAO;
+import com.CRMThinClient.model.DAO.MostraTelefoniDAO;
 import com.CRMThinClient.model.DAO.ScritturaNotaDAO;
 import com.CRMThinClient.model.Domain.Appuntamento;
+import com.CRMThinClient.model.Domain.Cliente;
 import com.CRMThinClient.model.Domain.Data;
 import com.CRMThinClient.model.Domain.Nota;
+import com.CRMThinClient.model.Domain.Offerta;
 import com.CRMThinClient.model.Domain.OffertaAccettata;
 import com.CRMThinClient.model.Domain.Orario;
 import com.CRMThinClient.model.Domain.Role;
@@ -36,12 +44,30 @@ public class OperatoreController implements Controller{
 
             switch(choice) {
                 case 1 -> showNotes();
-                case 2 -> writeNote();
-                case 3 -> insertAcceptedOffer();
-                case 4 -> System.exit(0);
+                case 2 -> showCustomers();
+                case 3 -> showOffers();
+                case 4 -> writeNote();
+                case 5 -> insertAcceptedOffer();
+                case 6 -> System.exit(0);
                 default -> throw new RuntimeException("Invalid choice");
             }
         }
+	}
+
+	public void showOffers() {
+		try {
+			List<Offerta> offerte=new MostraOfferteDAO().execute();
+			if(offerte.isEmpty()) {
+				System.out.println("Non sono presenti offerte valide nel DB");
+			}
+			else {
+				for(Offerta o: offerte) {
+					OperatoreView.riepilogo(o.toString());
+				}
+			}
+		} catch (DAOException e) {
+			System.err.println(e.getMessage());
+		}
 	}
 
 	public void insertAcceptedOffer() {
@@ -63,7 +89,7 @@ public class OperatoreController implements Controller{
 			}
 		}
 		OffertaAccettata offerta= new OffertaAccettata(codOperatore,codCliente,codOfferta,data);
-		OperatoreView.riepilogoOffertaAccettata(offerta.toString());
+		OperatoreView.riepilogo(offerta.toString());
 		System.out.print("Vuoi confermare? Si/No: ");
 		if(scanner.nextLine().equalsIgnoreCase("Si")) {
 			saveAcceptedOffer(offerta);
@@ -77,7 +103,7 @@ public class OperatoreController implements Controller{
 		try {
 			new InserisciOffertaDAO().execute(offerta);
 		} catch (DAOException e) {
-			System.err.println("Problemi con l'inserimento dell'offerta accettata nel DB, RIPROVARE!");
+			System.err.println(e.getMessage());
 		}
 	}
 
@@ -92,6 +118,7 @@ public class OperatoreController implements Controller{
 		Nota nota= new Nota(codOfferta,codCliente,codOperatore);
 		System.out.print("Inserisci esito chiamata: ");
 		nota.inserisciEsito(scanner.nextLine());
+		nota.inserisciData(true, null);
 		System.out.print("Vuoi allegare un appuntamento? Si/No: ");
 		if(scanner.nextLine().equalsIgnoreCase("Si")) {
 			Appuntamento appuntamento= new Appuntamento(codCliente);
@@ -120,7 +147,7 @@ public class OperatoreController implements Controller{
 			appuntamento.inserisciDataEOrario(data, orario);
 			nota.allegaAppuntamento(appuntamento);
 		}
-		OperatoreView.riepilogoNota(nota.toString());
+		OperatoreView.riepilogo(nota.toString());
 		System.out.print("Vuoi confermare? Si/No: ");
 		if(scanner.nextLine().equalsIgnoreCase("Si")) {
 			saveNote(nota);
@@ -131,15 +158,46 @@ public class OperatoreController implements Controller{
 	}
 
 	public void showNotes() {
-		//PARTE DAO TROVA NOTE DI QUEL CLIENTE
-		//CICLO CHIAMA VIEW OPERATORE CHE RESTITUISCE NOTE!
+		Scanner scanner = Main.getScanner();
+		System.out.print("Inserisci il codice fiscale del cliente: ");
+		try {
+			List<Nota> note=new ListaNoteDAO().execute(scanner.nextLine());
+			if(note.isEmpty()==false) {
+				for(Nota n: note) {
+					OperatoreView.riepilogo(n.toString());
+				}
+			}
+			else{
+				System.out.println("Il cliente non ha note associate!");
+			}
+		} catch (DAOException e) {
+			System.err.println(e.getMessage());
+		}
+	}
+
+	public void showCustomers() {
+		try {
+			List<Cliente> clienti=new MostraClientiDAO().execute();
+			if(clienti.isEmpty()) {
+				System.out.println("Non sono presenti clienti nel DB");
+			}
+			else {
+				new MostraTelefoniDAO().execute(clienti);
+				new MostraEmailDAO().execute(clienti);
+				for(Cliente c: clienti) {
+					OperatoreView.riepilogo(c.toString());
+				}
+			}
+		} catch (DAOException e) {
+			System.err.println(e.getMessage());
+		}
 	}
 
 	private void saveNote(Nota nota) {
 		try {
 			new ScritturaNotaDAO().execute(nota);
 		} catch (DAOException e) {
-			System.err.println("Problemi con l'inserimento della nota nel DB, RIPROVARE!");
+			System.err.println(e.getMessage());
 		}
 	}
 	

@@ -21,7 +21,7 @@ public class InserisciOffertaAccettataDAO implements GenericProcedureDAO<Void>{
 			cs.setString(4, offerta.getOperatore());
 			cs.execute();
 		}catch(SQLException e) {
-			throw new DAOException("Errore inserimento offerta accettata: "+e.getMessage());
+			throw new DAOException("Errore inserimento offerta accettata nel DB: "+e.getMessage());
 		}
 		return null;
 	}

@@ -21,7 +21,7 @@ public class InserisciOffertaDAO implements GenericProcedureDAO<Void>{
 			cs.setDate(4, offerta.getScadenza().getDataForDBMS());
 			cs.execute();
 		}catch(SQLException e) {
-			throw new DAOException("Errore inserimento offerta: "+e.getMessage());
+			throw new DAOException("Errore inserimento offerta nel DB: "+e.getMessage());
 		}
 		return null;
 	}

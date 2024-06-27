@@ -17,7 +17,16 @@ public class Nota {
 	public void inserisciEsito(String esito) {
 		this.esito=esito;
 		this.dataDiModifica=new Data();
-		dataDiModifica.dataCorrente();
+	}
+	
+	public void inserisciData(boolean bool,Data data) {
+		if(bool) {
+			this.dataDiModifica=new Data();
+			dataDiModifica.dataCorrente();
+		}
+		else {
+			this.dataDiModifica=data;
+		}
 	}
 	
 	public void allegaAppuntamento(Appuntamento appuntamento) {

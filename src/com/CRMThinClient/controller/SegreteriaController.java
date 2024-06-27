@@ -104,7 +104,7 @@ public class SegreteriaController implements Controller{
 		try {
 			new RegistraClienteDAO().execute(cliente);
 		}catch(DAOException e) {
-			System.err.println("Problemi con la registrazione del cliente nel DB. RIPROVARE!");
+			System.err.println(e.getMessage());
 		}
 	}
 
@@ -147,7 +147,7 @@ public class SegreteriaController implements Controller{
 		try {
 			new InserisciOffertaDAO().execute(offerta);
 		}catch(DAOException e) {
-			System.err.println("Problemi con l'inserimento dell'offerta nel DB. RIPROVARE!");
+			System.err.println(e.getMessage());
 		}
 	}
 	

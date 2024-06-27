@@ -38,7 +38,7 @@ public class RegistraClienteDAO implements GenericProcedureDAO<Void>{
 			cs.setString(11, email.toString());
 			cs.execute();
 		}catch(SQLException e) {
-			throw new DAOException("Errore registrazione cliente: "+e.getMessage());
+			throw new DAOException("Errore registrazione cliente nel DB: "+e.getMessage());
 		}
 		return null;
 	}

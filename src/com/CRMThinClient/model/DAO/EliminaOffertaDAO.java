@@ -16,7 +16,7 @@ public class EliminaOffertaDAO implements GenericProcedureDAO<Void>{
 			cs.setString(1, (String)params[0]);
 			cs.execute();
 		}catch(SQLException e) {
-			throw new DAOException("Errore eliminazione offerta: "+e.getMessage());
+			throw new DAOException("Errore eliminazione offerta nel DB: "+e.getMessage());
 		}
 		return null;
 	}
