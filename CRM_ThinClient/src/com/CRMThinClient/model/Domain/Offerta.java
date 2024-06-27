@@ -19,6 +19,22 @@ public class Offerta {
 		this.dataDiScadenza=dataDiScadenza;
 	}
 	
+	public String getCodice() {
+		return this.codiceOfferta;
+	}
+	
+	public String getNome() {
+		return this.nomeOfferta;
+	}
+	
+	public String getDescrizione() {
+		return this.descrizione;
+	}
+	
+	public Data getScadenza() {
+		return this.dataDiScadenza;
+	}
+	
 	@Override
 	public String toString() {
 		return "codice offerta: "+codiceOfferta+" "+"nome offerta: "+nomeOfferta+" "+"data di scadenza: "+dataDiScadenza.toString()+"\n"+"descrizione: "+descrizione;

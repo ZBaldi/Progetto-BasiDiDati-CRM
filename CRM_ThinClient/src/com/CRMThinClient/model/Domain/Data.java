@@ -1,5 +1,6 @@
 package com.CRMThinClient.model.Domain;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -22,6 +23,11 @@ public class Data {
 	
 	public void dataCorrente() {
 		data=LocalDate.now();
+	}
+	
+	public Date getDataForDBMS() {
+	    Date sqlDate = Date.valueOf(this.data);
+	    return sqlDate;
 	}
 	
 	@Override

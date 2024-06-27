@@ -1,5 +1,6 @@
 package com.CRMThinClient.model.Domain;
 
+import java.sql.Time;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -18,6 +19,11 @@ public class Orario {
 				throw new Exception();
 			}
 		}
+	}
+	
+	public Time getTimeForDBMS() {
+	    Time sqlTime = Time.valueOf(this.orario);
+	    return sqlTime;
 	}
 	
 	@Override

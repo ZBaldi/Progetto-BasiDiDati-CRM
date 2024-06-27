@@ -13,6 +13,22 @@ public class OffertaAccettata{
 		this.dataDiAccettazione=dataDiAccettazione;
 	}
 	
+	public String getCodice() {
+		return this.codiceOfferta;
+	}
+	
+	public String getOperatore() {
+		return this.codiceOperatore;
+	}
+	
+	public String getCliente() {
+		return this.codiceCliente;
+	}
+	
+	public Data getDataContratto() {
+		return this.dataDiAccettazione;
+	}
+	
 	@Override
 	public String toString() {
 		return "codice operatore: "+codiceOperatore+"\n"+"codice cliente: "+codiceCliente+"\n"+"codice offerta: "+codiceOfferta+"\n"+"data di accettazione: "+dataDiAccettazione.toString();

@@ -17,11 +17,50 @@ public class Nota {
 	public void inserisciEsito(String esito) {
 		this.esito=esito;
 		this.dataDiModifica=new Data();
-		dataDiModifica.dataCorrente();
+	}
+	
+	public void inserisciData(boolean bool,Data data) {
+		if(bool) {
+			this.dataDiModifica=new Data();
+			dataDiModifica.dataCorrente();
+		}
+		else {
+			this.dataDiModifica=data;
+		}
 	}
 	
 	public void allegaAppuntamento(Appuntamento appuntamento) {
 		this.appuntamento=appuntamento;
+	}
+	
+	public Appuntamento getAppuntamento() {
+		if(this.appuntamento != null) {
+			return appuntamento;
+		}
+		else {
+			System.out.println("Non è allegato un appuntamento!");
+			return null;
+		}
+	}
+	
+	public String getCliente() {
+		return this.codiceCliente;
+	}
+	
+	public String getOfferta() {
+		return this.codiceOfferta;
+	}
+	
+	public String getOperatore() {
+		return this.codiceOperatore;
+	}
+	
+	public String getEsito() {
+		return this.esito;
+	}
+	
+	public Data getData() {
+		return this.dataDiModifica;
 	}
 	
 	@Override
