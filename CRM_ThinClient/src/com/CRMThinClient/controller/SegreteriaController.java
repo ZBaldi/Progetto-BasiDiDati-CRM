@@ -2,17 +2,21 @@ package com.CRMThinClient.controller;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Scanner;
-
 import com.CRMThinClient.exception.DAOException;
 import com.CRMThinClient.main.Main;
 import com.CRMThinClient.model.DAO.ConnectionFactory;
+import com.CRMThinClient.model.DAO.ReportSegreteriaDAO;
+import com.CRMThinClient.model.DAO.EliminaOffertaDAO;
 import com.CRMThinClient.model.DAO.InserisciOffertaDAO;
+import com.CRMThinClient.model.DAO.MostraOfferteDAO;
 import com.CRMThinClient.model.DAO.RegistraClienteDAO;
 import com.CRMThinClient.model.Domain.Cliente;
 import com.CRMThinClient.model.Domain.Data;
 import com.CRMThinClient.model.Domain.Indirizzo;
 import com.CRMThinClient.model.Domain.Offerta;
+import com.CRMThinClient.model.Domain.Report;
 import com.CRMThinClient.model.Domain.Role;
 import com.CRMThinClient.view.SegreteriaView;
 
@@ -37,10 +41,29 @@ public class SegreteriaController implements Controller{
                 case 1 -> insertOffer();
                 case 2 -> doReport();
                 case 3 -> insertCustomer();
-                case 4 -> System.exit(0);
+                case 4 -> deleteOffer();
+                case 5 -> System.exit(0);
                 default -> throw new RuntimeException("Invalid choice");
             }
         }
+	}
+
+	public void deleteOffer() {
+		try {
+			List<Offerta> offerte=new MostraOfferteDAO().execute(false);
+			if(offerte.isEmpty()) {
+				System.out.println("Non sono presenti offerte scadute da eliminare nel DB");
+			}
+			else {
+				for(Offerta o: offerte) {
+					SegreteriaView.riepilogo(o.toString());
+				}
+				System.out.print("Inserisci il numero dell'offerta da eliminare, es: 1 o 2 o ... : ");
+				new EliminaOffertaDAO().execute(offerte.get(Integer.parseInt(Main.getScanner().nextLine())));
+			}
+		} catch (DAOException e) {
+			System.err.println(e.getMessage());
+		}
 	}
 
 	public void insertCustomer() {
@@ -108,9 +131,47 @@ public class SegreteriaController implements Controller{
 		}
 	}
 
-	public Object doReport() {
-		// TODO Auto-generated method stub
-		return null;
+	public void doReport() {
+		Scanner scanner= Main.getScanner();
+		Data dataInizio=new Data();
+		while(true) {
+			System.out.print("Inserisci Data di inizio report Formato: gg-mm-aaaa: ");
+			try{
+				dataInizio.inserisciData(scanner.nextLine());
+				break;
+			}catch(Exception e) {
+				System.out.println("Riprova!");
+			}
+		}
+		Data dataFine=new Data();
+		while(true) {
+			System.out.print("Inserisci Data di fine report Formato: gg-mm-aaaa: ");
+			try{
+				dataFine.inserisciData(scanner.nextLine());
+				break;
+			}catch(Exception e) {
+				System.out.println("Riprova!");
+			}
+		}
+		try {
+			List<Report> reports= new ReportSegreteriaDAO().execute(dataInizio.getDataForDBMS(),dataFine.getDataForDBMS());
+			if(reports.isEmpty()) {
+				System.out.println("Nessun cliente è stato contattato nel periodo di tempo scelto");
+			}
+			else {
+				StringBuilder reportStr= new StringBuilder();
+				reportStr.append("Clienti contattati: "+reports.size()+"\n");
+				for(int i=0; i<reports.size();i++) {
+					reportStr.append(reports.get(i).toString());
+					if(i+1 != reports.size()) {
+						reportStr.append("\n");
+					}
+				}
+				SegreteriaView.riepilogo(reportStr.toString());
+			}
+		} catch (DAOException e) {
+			System.err.println(e.getMessage());
+		}
 	}
 
 	public void insertOffer() {

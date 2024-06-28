@@ -56,7 +56,7 @@ public class OperatoreController implements Controller{
 
 	public void showOffers() {
 		try {
-			List<Offerta> offerte=new MostraOfferteDAO().execute();
+			List<Offerta> offerte=new MostraOfferteDAO().execute(true);
 			if(offerte.isEmpty()) {
 				System.out.println("Non sono presenti offerte valide nel DB");
 			}

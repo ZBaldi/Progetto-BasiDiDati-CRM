@@ -15,7 +15,8 @@ public class SegreteriaView {
         System.out.println("1) Insert new offer");
         System.out.println("2) Do Report");
         System.out.println("3) Insert new customer");
-        System.out.println("4) Quit");
+        System.out.println("4) Delete a offer");
+        System.out.println("5) Quit");
 
 
         Scanner input= Main.getScanner();
@@ -23,7 +24,7 @@ public class SegreteriaView {
 		while (true) {
 			 System.out.print("Please enter your choice: ");
 			 choice = Integer.parseInt(input.nextLine());
-			 if (choice >= 1 && choice <= 4) {
+			 if (choice >= 1 && choice <= 5) {
 			     break;
 			 }
 			 System.out.println("Invalid option");

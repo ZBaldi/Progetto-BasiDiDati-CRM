@@ -20,7 +20,13 @@ public class MostraOfferteDAO implements GenericProcedureDAO<List<Offerta>>{
 		List<Offerta> offerte= new ArrayList<Offerta>();
 		try {
 			Connection conn = ConnectionFactory.getConnection();
-			CallableStatement cs = conn.prepareCall("{mostra_offerte()}");
+			CallableStatement cs;
+			if((boolean)params[0]) {
+				cs = conn.prepareCall("{mostra_offerte()}");
+			}
+			else {
+				cs = conn.prepareCall("{mostra_offerte_scadute()}");
+			}
 			boolean status = cs.execute();
 			if(status) {
 				ResultSet rs= cs.getResultSet();

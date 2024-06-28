@@ -8,10 +8,10 @@ public class Cliente {
 	private String cognome;
 	private String cf;
 	private List<String> email=new ArrayList<String>();
-	private Data dataDiRegistrazione;
-	private Data dataDiNascita;
+	private Data dataDiRegistrazione=null;
+	private Data dataDiNascita=null;
 	private List<String> telefoni=new ArrayList<String>();
-	private Indirizzo indirizzo;
+	private Indirizzo indirizzo=null;
 	
 	public Cliente(String nome,String cognome,String cf, Data dataDiRegistrazione, Data dataDiNascita) {
 		this.nome=nome;
@@ -19,6 +19,12 @@ public class Cliente {
 		this.cf=cf;
 		this.dataDiRegistrazione=dataDiRegistrazione;
 		this.dataDiNascita=dataDiNascita;
+	}
+	
+	public Cliente(String nome,String cognome,String cf) {
+		this.nome=nome;
+		this.cognome=cognome;
+		this.cf=cf;
 	}
 	
 	public void inserisciEmail(String email) {
