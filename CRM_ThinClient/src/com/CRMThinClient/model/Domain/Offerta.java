@@ -37,6 +37,6 @@ public class Offerta {
 	
 	@Override
 	public String toString() {
-		return "codice offerta: "+codiceOfferta+" "+"nome offerta: "+nomeOfferta+" "+"data di scadenza: "+dataDiScadenza.toString()+"\n"+"descrizione: "+descrizione;
+		return "codice offerta: "+codiceOfferta+"\n"+"nome offerta: "+nomeOfferta+"\n"+"data di scadenza: "+dataDiScadenza.toString()+"\n"+"descrizione: "+descrizione;
 	}
 }

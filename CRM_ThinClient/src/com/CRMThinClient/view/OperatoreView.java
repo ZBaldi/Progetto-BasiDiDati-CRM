@@ -38,6 +38,7 @@ public class OperatoreView {
 		System.out.println("*     RIEPILOGO     *");
 		System.out.println("********************************\n");
 		System.out.println(s);
+		System.out.println("");
 	}
 
 }

@@ -24,7 +24,7 @@ public class RegistraClienteDAO implements GenericProcedureDAO<Void>{
 		email.deleteCharAt(email.length()-1);
 		try {
 			Connection conn = ConnectionFactory.getConnection();
-			CallableStatement cs = conn.prepareCall("{registra_cliente(?,?,?,?,?,?,?,?,?,?,?)}");
+			CallableStatement cs = conn.prepareCall("{call registra_cliente(?,?,?,?,?,?,?,?,?,?,?)}");
 			cs.setString(1, cliente.getCf());
 			cs.setString(2, cliente.getNome());
 			cs.setString(3, cliente.getCognome());

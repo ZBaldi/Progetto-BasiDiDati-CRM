@@ -22,10 +22,10 @@ public class MostraOfferteDAO implements GenericProcedureDAO<List<Offerta>>{
 			Connection conn = ConnectionFactory.getConnection();
 			CallableStatement cs;
 			if((boolean)params[0]) {
-				cs = conn.prepareCall("{mostra_offerte()}");
+				cs = conn.prepareCall("{call mostra_offerte()}");
 			}
 			else {
-				cs = conn.prepareCall("{mostra_offerte_scadute()}");
+				cs = conn.prepareCall("{call mostra_offerte_scadute()}");
 			}
 			boolean status = cs.execute();
 			if(status) {

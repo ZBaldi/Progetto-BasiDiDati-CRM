@@ -23,7 +23,7 @@ public class ListaNoteDAO implements GenericProcedureDAO<List<Nota>>{
 		List<Nota> note= new ArrayList<Nota>();
 		try {
 			Connection conn = ConnectionFactory.getConnection();
-			CallableStatement cs = conn.prepareCall("{lista_note(?)}");
+			CallableStatement cs = conn.prepareCall("{call lista_note(?)}");
 			cs.setString(1, (String)params[0]);
 			boolean status = cs.execute();
 			if(status) {

@@ -18,7 +18,7 @@ public class ReportSegreteriaDAO implements GenericProcedureDAO<List<Report>>{
 		List<Report> reports= new ArrayList<Report>();
 		try {
 			Connection conn = ConnectionFactory.getConnection();
-			CallableStatement cs = conn.prepareCall("{report_clienti(?,?)}");
+			CallableStatement cs = conn.prepareCall("{call report_clienti(?,?)}");
 			cs.setDate(1, (Date)params[0]);
 			cs.setDate(2, (Date)params[1]);
 			boolean status = cs.execute();

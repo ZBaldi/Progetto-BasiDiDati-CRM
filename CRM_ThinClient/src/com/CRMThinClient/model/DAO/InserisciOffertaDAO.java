@@ -14,7 +14,7 @@ public class InserisciOffertaDAO implements GenericProcedureDAO<Void>{
 		Offerta offerta= (Offerta) params[0];
 		try {
 			Connection conn = ConnectionFactory.getConnection();
-			CallableStatement cs = conn.prepareCall("{inserisci_offerta(?,?,?,?)}");
+			CallableStatement cs = conn.prepareCall("{call inserisci_offerta(?,?,?,?)}");
 			cs.setString(1, offerta.getCodice());
 			cs.setString(2, offerta.getNome());
 			cs.setString(3, offerta.getDescrizione());

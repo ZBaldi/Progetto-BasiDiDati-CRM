@@ -8,7 +8,7 @@ import java.util.Scanner;
 import com.CRMThinClient.exception.DAOException;
 import com.CRMThinClient.main.Main;
 import com.CRMThinClient.model.DAO.ConnectionFactory;
-import com.CRMThinClient.model.DAO.InserisciOffertaDAO;
+import com.CRMThinClient.model.DAO.InserisciOffertaAccettataDAO;
 import com.CRMThinClient.model.DAO.ListaNoteDAO;
 import com.CRMThinClient.model.DAO.MostraClientiDAO;
 import com.CRMThinClient.model.DAO.MostraEmailDAO;
@@ -26,7 +26,6 @@ import com.CRMThinClient.model.Domain.Role;
 import com.CRMThinClient.view.OperatoreView;
 
 public class OperatoreController implements Controller{
-
 	@Override
 	public void start() {
 		try {
@@ -101,7 +100,7 @@ public class OperatoreController implements Controller{
 
 	private void saveAcceptedOffer(OffertaAccettata offerta) {
 		try {
-			new InserisciOffertaDAO().execute(offerta);
+			new InserisciOffertaAccettataDAO().execute(offerta);
 		} catch (DAOException e) {
 			System.err.println(e.getMessage());
 		}
@@ -176,17 +175,34 @@ public class OperatoreController implements Controller{
 	}
 
 	public void showCustomers() {
+		List<Cliente> clienti=null;
 		try {
-			List<Cliente> clienti=new MostraClientiDAO().execute();
-			if(clienti.isEmpty()) {
-				System.out.println("Non sono presenti clienti nel DB");
+			clienti=new MostraClientiDAO().execute();
+		} catch (DAOException e) {
+			System.err.println(e.getMessage());
+		}
+		if(clienti==null || clienti.isEmpty()) {
+			System.out.println("Non sono presenti clienti nel DB");
+		}
+		else {
+			showRecapiti(clienti);
+			for(Cliente c: clienti) {
+				OperatoreView.riepilogo(c.toString());
 			}
-			else {
-				new MostraTelefoniDAO().execute(clienti);
-				new MostraEmailDAO().execute(clienti);
-				for(Cliente c: clienti) {
-					OperatoreView.riepilogo(c.toString());
-				}
+		}
+	}
+
+	private void showRecapiti(List<Cliente> clienti) {
+		try {
+			for(Cliente c:clienti) {
+				new MostraTelefoniDAO().execute(c);
+			}
+		} catch (DAOException e) {
+			System.err.println(e.getMessage());
+		}
+		try {
+			for(Cliente c :clienti) {
+				new MostraEmailDAO().execute(c);
 			}
 		} catch (DAOException e) {
 			System.err.println(e.getMessage());

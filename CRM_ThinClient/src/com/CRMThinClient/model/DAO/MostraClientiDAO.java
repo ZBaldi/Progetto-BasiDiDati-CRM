@@ -21,7 +21,7 @@ public class MostraClientiDAO implements GenericProcedureDAO<List<Cliente>>{
 		List<Cliente> clienti= new ArrayList<Cliente>();
 		try {
 			Connection conn = ConnectionFactory.getConnection();
-			CallableStatement cs = conn.prepareCall("{mostra_clienti()}");
+			CallableStatement cs = conn.prepareCall("{call mostra_clienti()}");
 			boolean status = cs.execute();
 			if(status) {
 				ResultSet rs= cs.getResultSet();

@@ -13,7 +13,7 @@ public class EliminaOffertaDAO implements GenericProcedureDAO<Void>{
 	public Void execute(Object... params) throws DAOException{
 		try {
 			Connection conn = ConnectionFactory.getConnection();
-			CallableStatement cs = conn.prepareCall("{elimina_offerte(?)}");
+			CallableStatement cs = conn.prepareCall("{call elimina_offerte(?)}");
 			Offerta offerta= (Offerta)params[0];
 			cs.setString(1, offerta.getCodice());
 			cs.execute();

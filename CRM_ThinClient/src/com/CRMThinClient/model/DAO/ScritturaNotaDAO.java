@@ -26,7 +26,7 @@ public class ScritturaNotaDAO implements GenericProcedureDAO<Void>{
 		}
 		try {
 			Connection conn = ConnectionFactory.getConnection();
-			CallableStatement cs = conn.prepareCall("{scrivi_nota(?,?,?,?,?,?,?,?)}");
+			CallableStatement cs = conn.prepareCall("{call scrivi_nota(?,?,?,?,?,?,?,?)}");
 			cs.setString(1, nota.getCliente());
 			cs.setString(2, nota.getOfferta());
 			cs.setString(3, nota.getEsito());
