@@ -175,20 +175,19 @@ public class OperatoreController implements Controller{
 	}
 
 	public void showCustomers() {
-		List<Cliente> clienti=null;
 		try {
-			clienti=new MostraClientiDAO().execute();
+			List<Cliente> clienti=new MostraClientiDAO().execute();
+			if(clienti.isEmpty()) {
+				System.out.println("Non sono presenti clienti nel DB");
+			}
+			else {
+				showRecapiti(clienti);
+				for(Cliente c: clienti) {
+					OperatoreView.riepilogo(c.toString());
+				}
+			}
 		} catch (DAOException e) {
 			System.err.println(e.getMessage());
-		}
-		if(clienti==null || clienti.isEmpty()) {
-			System.out.println("Non sono presenti clienti nel DB");
-		}
-		else {
-			showRecapiti(clienti);
-			for(Cliente c: clienti) {
-				OperatoreView.riepilogo(c.toString());
-			}
 		}
 	}
 
