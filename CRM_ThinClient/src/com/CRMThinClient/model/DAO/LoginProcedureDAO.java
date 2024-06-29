@@ -4,7 +4,6 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Types;
-
 import com.CRMThinClient.exception.DAOException;
 import com.CRMThinClient.model.Domain.Credentials;
 import com.CRMThinClient.model.Domain.Role;
@@ -16,8 +15,7 @@ public class LoginProcedureDAO implements GenericProcedureDAO<Credentials> {
 	public Credentials execute(Object... params) throws DAOException{
 		String username = (String) params[0];
         String password = (String) params[1];
-        int role;
-
+        int role=0;
         try {
             Connection conn = ConnectionFactory.getConnection();
             CallableStatement cs = conn.prepareCall("{call login(?,?,?)}");
@@ -29,9 +27,6 @@ public class LoginProcedureDAO implements GenericProcedureDAO<Credentials> {
         } catch(SQLException e) {
             throw new DAOException("Login error: " + e.getMessage());
         }
-
-
         return new Credentials(username, password, Role.fromInt(role));
 	}
-	
 }
