@@ -1,17 +1,17 @@
 package com.CRMThinClient.model.Domain;
 
 public class Indirizzo {
-	private String via,citta,provincia,paese;
+	private String indirizzo,citta,provincia,paese;
 	
-	public Indirizzo(String via,String citta, String provincia, String paese) {
-		this.via=via;
+	public Indirizzo(String indirizzo, String citta, String provincia, String paese) {
+		this.indirizzo=indirizzo;
 		this.citta=citta;
 		this.provincia=provincia;
 		this.paese=paese;
 	}
 	
-	public String getVia() {
-		return via;
+	public String getIndirizzo() {
+		return indirizzo;
 	}
 
 	public String getCitta() {
@@ -25,9 +25,9 @@ public class Indirizzo {
 	public String getPaese() {
 		return paese;
 	}
-
+	
 	@Override
 	public String toString() {
-		return via+" "+citta+" "+provincia+" "+paese;
+		return indirizzo+" "+citta+" "+provincia+" "+paese;
 	}
 }

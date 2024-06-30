@@ -28,7 +28,7 @@ public class RegistraClienteDAO implements GenericProcedureDAO<Void>{
 			cs.setString(1, cliente.getCf().toUpperCase());
 			cs.setString(2, cliente.getNome().toUpperCase());
 			cs.setString(3, cliente.getCognome().toUpperCase());
-			cs.setString(4, cliente.getIndirizzo().getVia().toUpperCase());
+			cs.setString(4, cliente.getIndirizzo().getIndirizzo().toUpperCase());
 			cs.setString(5, cliente.getIndirizzo().getCitta().toUpperCase());
 			cs.setString(6, cliente.getIndirizzo().getProvincia().toUpperCase());
 			cs.setString(7, cliente.getIndirizzo().getPaese().toUpperCase());

@@ -23,6 +23,8 @@ import com.CRMThinClient.model.Domain.Offerta;
 import com.CRMThinClient.model.Domain.OffertaAccettata;
 import com.CRMThinClient.model.Domain.Orario;
 import com.CRMThinClient.model.Domain.Role;
+import com.CRMThinClient.model.Domain.SchemaRegex;
+import com.CRMThinClient.model.Domain.ValidatoreCampi;
 import com.CRMThinClient.view.OperatoreView;
 
 public class OperatoreController implements Controller{
@@ -77,10 +79,28 @@ public class OperatoreController implements Controller{
 
 	public void insertAcceptedOffer() {
 		Scanner scanner= Main.getScanner();
-		System.out.print("Inserisci codice offerta: ");
-		String codOfferta=scanner.nextLine();
-		System.out.print("Inserisci codice fiscale cliente: ");
-		String codCliente=scanner.nextLine();
+		String codiceOfferta;
+		while(true) {
+			System.out.print("Inserisci Codice Offerta: ");
+			codiceOfferta= scanner.nextLine();
+			if(ValidatoreCampi.validatore(SchemaRegex.CODICEOFFERTA,codiceOfferta)) {
+				break;
+			}
+			else {
+				System.out.println("Codice offerta non valido!");
+			}
+		}
+		String cf;
+		while(true) {
+			System.out.print("Inserisci CF cliente: ");
+			cf= scanner.nextLine();
+			if(ValidatoreCampi.validatore(SchemaRegex.CF,cf)) {
+				break;
+			}
+			else {
+				System.out.println("CF non valido!");
+			}
+		}
 		Data data= new Data();
 		while(true) {
 			System.out.print("Inserisci data di accettazione Formato:gg-mm-aaaa: ");
@@ -91,7 +111,7 @@ public class OperatoreController implements Controller{
 				System.out.println("Riprova!");
 			}
 		}
-		OffertaAccettata offerta= new OffertaAccettata(idOperatore,codCliente,codOfferta,data);
+		OffertaAccettata offerta= new OffertaAccettata(idOperatore,cf,codiceOfferta,data);
 		OperatoreView.riepilogo(offerta.toString());
 		System.out.print("Vuoi confermare? Si/No: ");
 		if(scanner.nextLine().equalsIgnoreCase("Si")) {
@@ -112,17 +132,35 @@ public class OperatoreController implements Controller{
 
 	public void writeNote() {
 		Scanner scanner= Main.getScanner();
-		System.out.print("Inserisci codice offerta: ");
-		String codOfferta=scanner.nextLine();
-		System.out.print("Inserisci codice fiscale cliente: ");
-		String codCliente=scanner.nextLine();
-		Nota nota= new Nota(codOfferta,codCliente,idOperatore);
+		String codiceOfferta;
+		while(true) {
+			System.out.print("Inserisci Codice Offerta: ");
+			codiceOfferta= scanner.nextLine();
+			if(ValidatoreCampi.validatore(SchemaRegex.CODICEOFFERTA,codiceOfferta)) {
+				break;
+			}
+			else {
+				System.out.println("Codice offerta non valido!");
+			}
+		}
+		String cf;
+		while(true) {
+			System.out.print("Inserisci CF cliente: ");
+			cf= scanner.nextLine();
+			if(ValidatoreCampi.validatore(SchemaRegex.CF,cf)) {
+				break;
+			}
+			else {
+				System.out.println("CF non valido!");
+			}
+		}
+		Nota nota= new Nota(codiceOfferta,cf,idOperatore);
 		System.out.print("Inserisci esito chiamata: ");
 		nota.inserisciEsito(scanner.nextLine());
 		nota.inserisciData(true, null);
 		System.out.print("Vuoi allegare un appuntamento? Si/No: ");
 		if(scanner.nextLine().equalsIgnoreCase("Si")) {
-			Appuntamento appuntamento= new Appuntamento(codCliente);
+			Appuntamento appuntamento= new Appuntamento(cf);
 			System.out.print("Inserisci sede: ");
 			appuntamento.inserisciSede(scanner.nextLine());
 			Data data= new Data();
@@ -160,9 +198,19 @@ public class OperatoreController implements Controller{
 
 	public void showNotes() {
 		Scanner scanner = Main.getScanner();
-		System.out.print("Inserisci il codice fiscale del cliente: ");
+		String cf;
+		while(true) {
+			System.out.print("Inserisci CF cliente: ");
+			cf= scanner.nextLine();
+			if(ValidatoreCampi.validatore(SchemaRegex.CF,cf)) {
+				break;
+			}
+			else {
+				System.out.println("CF non valido!");
+			}
+		}
 		try {
-			List<Nota> note=new ListaNoteDAO().execute(scanner.nextLine());
+			List<Nota> note=new ListaNoteDAO().execute(cf);
 			if(note.isEmpty()==false) {
 				for(Nota n: note) {
 					OperatoreView.riepilogo(n.toString());

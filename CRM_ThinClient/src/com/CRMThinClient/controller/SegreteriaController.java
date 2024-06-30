@@ -12,6 +12,7 @@ import com.CRMThinClient.model.DAO.EliminaOffertaDAO;
 import com.CRMThinClient.model.DAO.InserisciOffertaDAO;
 import com.CRMThinClient.model.DAO.MostraOfferteDAO;
 import com.CRMThinClient.model.DAO.RegistraClienteDAO;
+import com.CRMThinClient.model.Domain.SchemaRegex;
 import com.CRMThinClient.model.Domain.Cliente;
 import com.CRMThinClient.model.Domain.Data;
 import com.CRMThinClient.model.Domain.Indirizzo;
@@ -78,8 +79,17 @@ public class SegreteriaController implements Controller{
 
 	public void insertCustomer() {
 		Scanner scanner= Main.getScanner();
-		System.out.print("Inserisci CF cliente: ");
-		String cf= scanner.nextLine();
+		String cf;
+		while(true) {
+			System.out.print("Inserisci CF cliente: ");
+			cf= scanner.nextLine();
+			if(ValidatoreCampi.validatore(SchemaRegex.CF,cf)) {
+				break;
+			}
+			else {
+				System.out.println("CF non valido!");
+			}
+		}
 		System.out.print("Inserisci nome cliente: ");
 		String nome= scanner.nextLine();
 		System.out.print("Inserisci cognome cliente: ");
@@ -101,8 +111,8 @@ public class SegreteriaController implements Controller{
 		while(true) {
 			System.out.print("Inserisci numero di telefono: ");
 			telefono= scanner.nextLine();
-			if(ValidatoreCampi.validaTelefono(telefono)) {
-				cliente.inserisciEmail(telefono);
+			if(ValidatoreCampi.validatore(SchemaRegex.TELEFONO,telefono)) {
+				cliente.inserisciTelefono(telefono);
 				System.out.print("Finito di inserire i recapiti telefonici? Si/No: ");
 				if(scanner.nextLine().equalsIgnoreCase("Si")) {
 					break;
@@ -116,7 +126,7 @@ public class SegreteriaController implements Controller{
 		while(true) {
 			System.out.print("Inserisci email: ");
 			email=scanner.nextLine();
-			if(ValidatoreCampi.validaEmail(email)) {
+			if(ValidatoreCampi.validatore(SchemaRegex.EMAIL,email)) {
 				cliente.inserisciEmail(email);
 				System.out.print("Finito di inserire le email? Si/No: ");
 				if(scanner.nextLine().equalsIgnoreCase("Si")) {
@@ -127,15 +137,39 @@ public class SegreteriaController implements Controller{
 				System.out.println("Email non valida!");
 			}
 		}
-		System.out.print("Inserisci indirizzo: via, civico e cap: ");
-		String indirizzo= scanner.nextLine();
+		StringBuilder indirizzo= new StringBuilder();
+		System.out.print("Inserisci via: ");
+		indirizzo.append(scanner.nextLine()+" ");
+		System.out.print("Inserisci civico: ");
+		indirizzo.append(scanner.nextLine()+" ");
+		String cap;
+		while(true) {
+			System.out.print("Inserisci cap: ");
+			cap= scanner.nextLine();
+			if(ValidatoreCampi.validatore(SchemaRegex.CAP,cap)) {
+				break;
+			}
+			else {
+				System.out.println("CAP non valido!");
+			}
+		}
+		indirizzo.append(cap);
 		System.out.print("Inserisci città: ");
 		String citta= scanner.nextLine();
-		System.out.print("Inserisci provincia: ");
-		String provincia= scanner.nextLine();
+		String provincia;
+		while(true) {
+			System.out.print("Inserisci provincia: ");
+			provincia= scanner.nextLine();
+			if(ValidatoreCampi.validatore(SchemaRegex.PROVINCIA,provincia)) {
+				break;
+			}
+			else {
+				System.out.println("provincia non valida!");
+			}
+		}
 		System.out.print("Inserisci Paese: ");
 		String paese= scanner.nextLine();
-		Indirizzo luogo= new Indirizzo(indirizzo,citta,provincia,paese);
+		Indirizzo luogo= new Indirizzo(indirizzo.toString(),citta,provincia,paese);
 		cliente.inserisciIndirizzo(luogo);
 		SegreteriaView.riepilogo(cliente.toString());
 		System.out.print("Vuoi confermare? Si/No: ");
@@ -200,8 +234,17 @@ public class SegreteriaController implements Controller{
 
 	public void insertOffer() {
 		Scanner scanner= Main.getScanner();
-		System.out.print("Inserisci Codice Offerta: ");
-		String codiceOfferta= scanner.nextLine();
+		String codiceOfferta;
+		while(true) {
+			System.out.print("Inserisci Codice Offerta: ");
+			codiceOfferta= scanner.nextLine();
+			if(ValidatoreCampi.validatore(SchemaRegex.CODICEOFFERTA,codiceOfferta)) {
+				break;
+			}
+			else {
+				System.out.println("Codice offerta non valido!");
+			}
+		}
 		System.out.print("Inserisci Nome Offerta: ");
 		String nomeOfferta= scanner.nextLine();
 		Offerta offerta= new Offerta(codiceOfferta,nomeOfferta);
