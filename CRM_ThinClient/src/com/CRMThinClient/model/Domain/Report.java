@@ -20,6 +20,6 @@ public class Report {
 
 	@Override
 	public String toString() {
-		return cliente.getNome()+" "+cliente.getCognome()+" "+cliente.getCf()+": "+contattato;
+		return cliente.getNome()+"|"+cliente.getCognome()+"|"+cliente.getCf()+":"+contattato;
 	}
 }

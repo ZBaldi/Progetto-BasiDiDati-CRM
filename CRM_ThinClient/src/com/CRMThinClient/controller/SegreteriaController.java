@@ -18,6 +18,7 @@ import com.CRMThinClient.model.Domain.Indirizzo;
 import com.CRMThinClient.model.Domain.Offerta;
 import com.CRMThinClient.model.Domain.Report;
 import com.CRMThinClient.model.Domain.Role;
+import com.CRMThinClient.model.Domain.ValidatoreCampi;
 import com.CRMThinClient.view.SegreteriaView;
 
 public class SegreteriaController implements Controller{
@@ -49,6 +50,7 @@ public class SegreteriaController implements Controller{
 	}
 
 	public void deleteOffer() {
+		Scanner scanner= Main.getScanner();
 		try {
 			List<Offerta> offerte=new MostraOfferteDAO().execute(false);
 			if(offerte.isEmpty()) {
@@ -58,8 +60,16 @@ public class SegreteriaController implements Controller{
 				for(Offerta o: offerte) {
 					SegreteriaView.riepilogo(o.toString());
 				}
-				System.out.print("Inserisci il numero dell'offerta da eliminare, es: 1 o 2 o ... : ");
-				new EliminaOffertaDAO().execute(offerte.get(Integer.parseInt(Main.getScanner().nextLine())));
+				int choice=0;
+				while (true) {
+					 System.out.print("Inserisci il numero dell'offerta da eliminare es: >= 1 e <= "+offerte.size()+": ");
+					 choice = Integer.parseInt(scanner.nextLine());
+					 if (choice >= 1 && choice <= offerte.size()) {
+					     break;
+					 }
+					 System.out.println("Opzione invalida");
+				}
+				new EliminaOffertaDAO().execute(offerte.get(choice-1));
 			}
 		} catch (DAOException e) {
 			System.err.println(e.getMessage());
@@ -87,20 +97,34 @@ public class SegreteriaController implements Controller{
 		Data dataDiRegistrazione=new Data();
 		dataDiRegistrazione.dataCorrente();
 		Cliente cliente= new Cliente(nome,cognome,cf,dataDiRegistrazione,dataDiNascita);
+		String telefono;
 		while(true) {
 			System.out.print("Inserisci numero di telefono: ");
-			cliente.inserisciTelefono(scanner.nextLine());
-			System.out.print("Finito di inserire i recapiti telefonici? Si/No: ");
-			if(scanner.nextLine().equalsIgnoreCase("Si")) {
-				break;
+			telefono= scanner.nextLine();
+			if(ValidatoreCampi.validaTelefono(telefono)) {
+				cliente.inserisciEmail(telefono);
+				System.out.print("Finito di inserire i recapiti telefonici? Si/No: ");
+				if(scanner.nextLine().equalsIgnoreCase("Si")) {
+					break;
+				}
+			}
+			else {
+				System.out.println("Telefono non valido!");
 			}
 		}
+		String email;
 		while(true) {
 			System.out.print("Inserisci email: ");
-			cliente.inserisciEmail(scanner.nextLine());
-			System.out.print("Finito di inserire le email? Si/No: ");
-			if(scanner.nextLine().equalsIgnoreCase("Si")) {
-				break;
+			email=scanner.nextLine();
+			if(ValidatoreCampi.validaEmail(email)) {
+				cliente.inserisciEmail(email);
+				System.out.print("Finito di inserire le email? Si/No: ");
+				if(scanner.nextLine().equalsIgnoreCase("Si")) {
+					break;
+				}
+			}
+			else {
+				System.out.println("Email non valida!");
 			}
 		}
 		System.out.print("Inserisci indirizzo: via, civico e cap: ");

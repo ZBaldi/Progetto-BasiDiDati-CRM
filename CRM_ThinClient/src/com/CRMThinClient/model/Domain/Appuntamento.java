@@ -1,6 +1,5 @@
 package com.CRMThinClient.model.Domain;
 
-
 public class Appuntamento {
 	private String codiceCliente;
 	private String sede;
@@ -34,6 +33,6 @@ public class Appuntamento {
 	
 	@Override
 	public String toString(){
-		return "codice cliente: "+codiceCliente+" "+"sede: "+sede+"\n"+"data appuntamento: "+dataAppuntamento.toString()+"\n"+"orario appuntamento: "+orarioAppuntamento.toString();
+		return "Codice cliente: "+codiceCliente+" "+"Sede: "+sede+"\n"+"Data appuntamento: "+dataAppuntamento.toString()+"\n"+"Orario appuntamento: "+orarioAppuntamento.toString();
 	}
 }

@@ -25,13 +25,13 @@ public class RegistraClienteDAO implements GenericProcedureDAO<Void>{
 		try {
 			Connection conn = ConnectionFactory.getConnection();
 			CallableStatement cs = conn.prepareCall("{call registra_cliente(?,?,?,?,?,?,?,?,?,?,?)}");
-			cs.setString(1, cliente.getCf());
-			cs.setString(2, cliente.getNome());
-			cs.setString(3, cliente.getCognome());
-			cs.setString(4, cliente.getIndirizzo().getVia());
-			cs.setString(5, cliente.getIndirizzo().getCitta());
-			cs.setString(6, cliente.getIndirizzo().getProvincia());
-			cs.setString(7, cliente.getIndirizzo().getPaese());
+			cs.setString(1, cliente.getCf().toUpperCase());
+			cs.setString(2, cliente.getNome().toUpperCase());
+			cs.setString(3, cliente.getCognome().toUpperCase());
+			cs.setString(4, cliente.getIndirizzo().getVia().toUpperCase());
+			cs.setString(5, cliente.getIndirizzo().getCitta().toUpperCase());
+			cs.setString(6, cliente.getIndirizzo().getProvincia().toUpperCase());
+			cs.setString(7, cliente.getIndirizzo().getPaese().toUpperCase());
 			cs.setDate(8, cliente.getDataDiNascita().getDataForDBMS());
 			cs.setDate(9, cliente.getDataDiRegistrazione().getDataForDBMS());
 			cs.setString(10, telefoni.toString());

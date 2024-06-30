@@ -15,10 +15,10 @@ public class InserisciOffertaAccettataDAO implements GenericProcedureDAO<Void>{
 		try {
 			Connection conn = ConnectionFactory.getConnection();
 			CallableStatement cs = conn.prepareCall("{call inserisci_offerta_accettata(?,?,?,?)}");
-			cs.setString(1, offerta.getCodice());
-			cs.setString(2, offerta.getCliente());
+			cs.setString(1, offerta.getCodice().toUpperCase());
+			cs.setString(2, offerta.getCliente().toUpperCase());
 			cs.setDate(3, offerta.getDataContratto().getDataForDBMS());
-			cs.setString(4, offerta.getOperatore());
+			cs.setString(4, offerta.getOperatore().toUpperCase());
 			cs.execute();
 		}catch(SQLException e) {
 			throw new DAOException("Errore inserimento offerta accettata nel DB: "+e.getMessage());

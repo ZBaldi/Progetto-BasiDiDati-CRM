@@ -74,7 +74,7 @@ public class Cliente {
 	@Override
 	public String toString(){
 		StringBuilder stringa= new StringBuilder();
-		stringa.append("Nome: "+nome+" "+"Cognome: "+cognome+" "+"Data di nascita: "+dataDiNascita+"\n"+"CodiceFiscale: "+cf+"\n"+"Data di registrazione: "+dataDiRegistrazione+"\n"+"Indirizzo: "+indirizzo.toString()+"\n");
+		stringa.append("Nome: "+nome+" "+"Cognome: "+cognome+"\n"+"Data di nascita: "+dataDiNascita+"\n"+"CodiceFiscale: "+cf+"\n"+"Data di registrazione: "+dataDiRegistrazione+"\n"+"Indirizzo: "+indirizzo.toString()+"\n");
 		stringa.append("Email: \n");
 		for(String s: email) {
 			stringa.append(s+"\n");

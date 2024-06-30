@@ -26,6 +26,12 @@ import com.CRMThinClient.model.Domain.Role;
 import com.CRMThinClient.view.OperatoreView;
 
 public class OperatoreController implements Controller{
+	private static String idOperatore;
+	
+	public static void setId(String s) {
+		idOperatore=s;
+	}
+	
 	@Override
 	public void start() {
 		try {
@@ -75,8 +81,6 @@ public class OperatoreController implements Controller{
 		String codOfferta=scanner.nextLine();
 		System.out.print("Inserisci codice fiscale cliente: ");
 		String codCliente=scanner.nextLine();
-		System.out.print("Inserisci codice operatore: ");
-		String codOperatore=scanner.nextLine();
 		Data data= new Data();
 		while(true) {
 			System.out.print("Inserisci data di accettazione Formato:gg-mm-aaaa: ");
@@ -87,7 +91,7 @@ public class OperatoreController implements Controller{
 				System.out.println("Riprova!");
 			}
 		}
-		OffertaAccettata offerta= new OffertaAccettata(codOperatore,codCliente,codOfferta,data);
+		OffertaAccettata offerta= new OffertaAccettata(idOperatore,codCliente,codOfferta,data);
 		OperatoreView.riepilogo(offerta.toString());
 		System.out.print("Vuoi confermare? Si/No: ");
 		if(scanner.nextLine().equalsIgnoreCase("Si")) {
@@ -112,9 +116,7 @@ public class OperatoreController implements Controller{
 		String codOfferta=scanner.nextLine();
 		System.out.print("Inserisci codice fiscale cliente: ");
 		String codCliente=scanner.nextLine();
-		System.out.print("Inserisci codice operatore: ");
-		String codOperatore=scanner.nextLine();
-		Nota nota= new Nota(codOfferta,codCliente,codOperatore);
+		Nota nota= new Nota(codOfferta,codCliente,idOperatore);
 		System.out.print("Inserisci esito chiamata: ");
 		nota.inserisciEsito(scanner.nextLine());
 		nota.inserisciData(true, null);

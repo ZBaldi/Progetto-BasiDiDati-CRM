@@ -27,12 +27,12 @@ public class ScritturaNotaDAO implements GenericProcedureDAO<Void>{
 		try {
 			Connection conn = ConnectionFactory.getConnection();
 			CallableStatement cs = conn.prepareCall("{call scrivi_nota(?,?,?,?,?,?,?,?)}");
-			cs.setString(1, nota.getCliente());
-			cs.setString(2, nota.getOfferta());
-			cs.setString(3, nota.getEsito());
-			cs.setString(4, nota.getOperatore());
+			cs.setString(1, nota.getCliente().toUpperCase());
+			cs.setString(2, nota.getOfferta().toUpperCase());
+			cs.setString(3, nota.getEsito().toUpperCase());
+			cs.setString(4, nota.getOperatore().toUpperCase());
 			cs.setDate(5, nota.getData().getDataForDBMS());
-			cs.setString(6, sede);
+			cs.setString(6, sede.toUpperCase());
 			cs.setDate(7, dataAppuntamento.getDataForDBMS());
 			cs.setTime(8, orarioAppuntamento.getTimeForDBMS());
 			cs.execute();

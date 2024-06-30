@@ -65,7 +65,7 @@ public class Nota {
 	
 	@Override
 	public String toString() {
-		String str="codice offerta: "+codiceOfferta+" "+"codice cliente: "+codiceCliente+" "+"codice operatore: "+codiceOperatore+"\n"+"esito: "+esito+"\n"+"data di modifica: "+dataDiModifica.toString();
+		String str="Codice offerta: "+codiceOfferta+"\n"+"Codice fiscale cliente: "+codiceCliente+"\n"+"Codice operatore: "+codiceOperatore+"\n"+"esito: "+esito+"\n"+"data di modifica: "+dataDiModifica.toString();
 		if(appuntamento!=null) {
 			str= str+"\n"+"Appuntamento:\n"+appuntamento.toString();
 		}

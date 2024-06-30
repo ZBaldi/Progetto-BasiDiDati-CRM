@@ -31,6 +31,6 @@ public class OffertaAccettata{
 	
 	@Override
 	public String toString() {
-		return "codice operatore: "+codiceOperatore+"\n"+"codice cliente: "+codiceCliente+"\n"+"codice offerta: "+codiceOfferta+"\n"+"data di accettazione: "+dataDiAccettazione.toString();
+		return "Codice operatore: "+codiceOperatore+"\n"+"Codice cliente: "+codiceCliente+"\n"+"Codice offerta: "+codiceOfferta+"\n"+"Data di accettazione: "+dataDiAccettazione.toString();
 	}
 }
