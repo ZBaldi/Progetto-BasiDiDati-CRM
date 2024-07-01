@@ -1,7 +1,10 @@
 package com.CRMThinClient.model.Domain;
 
 public class Indirizzo {
-	private String indirizzo,citta,provincia,paese;
+	private String indirizzo;
+	private String citta;
+	private String provincia;
+	private String paese;
 	
 	public Indirizzo(String indirizzo, String citta, String provincia, String paese) {
 		this.indirizzo=indirizzo;

@@ -38,7 +38,6 @@ public class Nota {
 			return appuntamento;
 		}
 		else {
-			System.out.println("Non è allegato un appuntamento!");
 			return null;
 		}
 	}

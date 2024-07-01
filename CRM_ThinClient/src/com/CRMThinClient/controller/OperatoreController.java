@@ -3,10 +3,7 @@ package com.CRMThinClient.controller;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Scanner;
-
 import com.CRMThinClient.exception.DAOException;
-import com.CRMThinClient.main.Main;
 import com.CRMThinClient.model.DAO.ConnectionFactory;
 import com.CRMThinClient.model.DAO.InserisciOffertaAccettataDAO;
 import com.CRMThinClient.model.DAO.ListaNoteDAO;
@@ -17,14 +14,14 @@ import com.CRMThinClient.model.DAO.MostraTelefoniDAO;
 import com.CRMThinClient.model.DAO.ScritturaNotaDAO;
 import com.CRMThinClient.model.Domain.Appuntamento;
 import com.CRMThinClient.model.Domain.Cliente;
-import com.CRMThinClient.model.Domain.Data;
 import com.CRMThinClient.model.Domain.Nota;
 import com.CRMThinClient.model.Domain.Offerta;
 import com.CRMThinClient.model.Domain.OffertaAccettata;
-import com.CRMThinClient.model.Domain.Orario;
 import com.CRMThinClient.model.Domain.Role;
 import com.CRMThinClient.model.Domain.SchemaRegex;
 import com.CRMThinClient.model.Domain.ValidatoreCampi;
+import com.CRMThinClient.model.bean.NotaBean;
+import com.CRMThinClient.model.bean.OffertaAccettataBean;
 import com.CRMThinClient.view.OperatoreView;
 
 public class OperatoreController implements Controller{
@@ -65,7 +62,7 @@ public class OperatoreController implements Controller{
 		try {
 			List<Offerta> offerte=new MostraOfferteDAO().execute(true);
 			if(offerte.isEmpty()) {
-				System.out.println("Non sono presenti offerte valide nel DB");
+				OperatoreView.stampaMessaggio("Non sono presenti offerte valide nel DB\n");
 			}
 			else {
 				for(Offerta o: offerte) {
@@ -78,47 +75,15 @@ public class OperatoreController implements Controller{
 	}
 
 	public void insertAcceptedOffer() {
-		Scanner scanner= Main.getScanner();
-		String codiceOfferta;
-		while(true) {
-			System.out.print("Inserisci Codice Offerta: ");
-			codiceOfferta= scanner.nextLine();
-			if(ValidatoreCampi.validatore(SchemaRegex.CODICEOFFERTA,codiceOfferta)) {
-				break;
-			}
-			else {
-				System.out.println("Codice offerta non valido!");
-			}
-		}
-		String cf;
-		while(true) {
-			System.out.print("Inserisci CF cliente: ");
-			cf= scanner.nextLine();
-			if(ValidatoreCampi.validatore(SchemaRegex.CF,cf)) {
-				break;
-			}
-			else {
-				System.out.println("CF non valido!");
-			}
-		}
-		Data data= new Data();
-		while(true) {
-			System.out.print("Inserisci data di accettazione Formato:gg-mm-aaaa: ");
-			try{
-				data.inserisciData(scanner.nextLine());
-				break;
-			}catch(Exception e) {
-				System.out.println("Riprova!");
-			}
-		}
-		OffertaAccettata offerta= new OffertaAccettata(idOperatore,cf,codiceOfferta,data);
+		OffertaAccettataBean bean=OperatoreView.inserisciDatiOffertaAccettata();
+		OffertaAccettata offerta= new OffertaAccettata(idOperatore,bean.getCliente(),bean.getCodiceOfferta(),bean.getDataContratto());
 		OperatoreView.riepilogo(offerta.toString());
-		System.out.print("Vuoi confermare? Si/No: ");
-		if(scanner.nextLine().equalsIgnoreCase("Si")) {
+		OperatoreView.stampaMessaggio("Vuoi confermare? Si/No: ");
+		if(OperatoreView.inserisciInput().equalsIgnoreCase("Si")) {
 			saveAcceptedOffer(offerta);
 		}
 		else {
-			System.out.println("Inserimento annullato!");
+			OperatoreView.stampaMessaggio("Inserimento annullato!\n");
 		}
 	}
 
@@ -131,82 +96,37 @@ public class OperatoreController implements Controller{
 	}
 
 	public void writeNote() {
-		Scanner scanner= Main.getScanner();
-		String codiceOfferta;
-		while(true) {
-			System.out.print("Inserisci Codice Offerta: ");
-			codiceOfferta= scanner.nextLine();
-			if(ValidatoreCampi.validatore(SchemaRegex.CODICEOFFERTA,codiceOfferta)) {
-				break;
-			}
-			else {
-				System.out.println("Codice offerta non valido!");
-			}
-		}
-		String cf;
-		while(true) {
-			System.out.print("Inserisci CF cliente: ");
-			cf= scanner.nextLine();
-			if(ValidatoreCampi.validatore(SchemaRegex.CF,cf)) {
-				break;
-			}
-			else {
-				System.out.println("CF non valido!");
-			}
-		}
-		Nota nota= new Nota(codiceOfferta,cf,idOperatore);
-		System.out.print("Inserisci esito chiamata: ");
-		nota.inserisciEsito(scanner.nextLine());
+		NotaBean bean=OperatoreView.inserisciDatiNota();
+		String cf= bean.getCodiceCliente();
+		Nota nota= new Nota(bean.getCodiceOfferta(),cf,idOperatore);
+		nota.inserisciEsito(bean.getEsito());
 		nota.inserisciData(true, null);
-		System.out.print("Vuoi allegare un appuntamento? Si/No: ");
-		if(scanner.nextLine().equalsIgnoreCase("Si")) {
+		if(bean.getSede()!=null) {
 			Appuntamento appuntamento= new Appuntamento(cf);
-			System.out.print("Inserisci sede: ");
-			appuntamento.inserisciSede(scanner.nextLine());
-			Data data= new Data();
-			while(true) {
-				System.out.print("Inserisci data appuntamento Formato:gg-mm-aaaa: ");
-				try{
-					data.inserisciData(scanner.nextLine());
-					break;
-				}catch(Exception e) {
-					System.out.println("Riprova!");
-				}
-			}
-			Orario orario= new Orario();
-			while(true) {
-				System.out.print("Inserisci orario appuntamento Formato: hh:mm : ");
-				try{
-					orario.inserisciOrario(scanner.nextLine());
-					break;
-				}catch(Exception e) {
-					System.out.println("Riprova!");
-				}
-			}
-			appuntamento.inserisciDataEOrario(data, orario);
+			appuntamento.inserisciSede(bean.getSede());
+			appuntamento.inserisciDataEOrario(bean.getDataAppuntamento(), bean.getOrarioAppuntamento());
 			nota.allegaAppuntamento(appuntamento);
 		}
 		OperatoreView.riepilogo(nota.toString());
-		System.out.print("Vuoi confermare? Si/No: ");
-		if(scanner.nextLine().equalsIgnoreCase("Si")) {
+		OperatoreView.stampaMessaggio("Vuoi confermare? Si/No: ");
+		if(OperatoreView.inserisciInput().equalsIgnoreCase("Si")) {
 			saveNote(nota);
 		}
 		else {
-			System.out.println("Nota scartata!");
+			OperatoreView.stampaMessaggio("Nota scartata!\n");
 		}
 	}
 
 	public void showNotes() {
-		Scanner scanner = Main.getScanner();
 		String cf;
 		while(true) {
-			System.out.print("Inserisci CF cliente: ");
-			cf= scanner.nextLine();
+			OperatoreView.stampaMessaggio("Inserisci CF cliente: ");
+			cf= OperatoreView.inserisciInput();
 			if(ValidatoreCampi.validatore(SchemaRegex.CF,cf)) {
 				break;
 			}
 			else {
-				System.out.println("CF non valido!");
+				OperatoreView.stampaMessaggio("CF non valido!\n");
 			}
 		}
 		try {
@@ -217,7 +137,7 @@ public class OperatoreController implements Controller{
 				}
 			}
 			else{
-				System.out.println("Il cliente non ha note associate!");
+				OperatoreView.stampaMessaggio("Il cliente non ha note associate!\n");
 			}
 		} catch (DAOException e) {
 			System.err.println(e.getMessage());
@@ -228,7 +148,7 @@ public class OperatoreController implements Controller{
 		try {
 			List<Cliente> clienti=new MostraClientiDAO().execute();
 			if(clienti.isEmpty()) {
-				System.out.println("Non sono presenti clienti nel DB");
+				OperatoreView.stampaMessaggio("Non sono presenti clienti nel DB\n");
 			}
 			else {
 				showRecapiti(clienti);

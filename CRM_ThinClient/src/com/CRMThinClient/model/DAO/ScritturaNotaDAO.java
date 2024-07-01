@@ -2,13 +2,12 @@ package com.CRMThinClient.model.DAO;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.SQLException;
-
+import java.sql.Time;
 import com.CRMThinClient.exception.DAOException;
 import com.CRMThinClient.model.Domain.Appuntamento;
-import com.CRMThinClient.model.Domain.Data;
 import com.CRMThinClient.model.Domain.Nota;
-import com.CRMThinClient.model.Domain.Orario;
 
 public class ScritturaNotaDAO implements GenericProcedureDAO<Void>{
 
@@ -17,12 +16,12 @@ public class ScritturaNotaDAO implements GenericProcedureDAO<Void>{
 		Nota nota= (Nota) params[0];
 		Appuntamento appuntamento= nota.getAppuntamento();
 		String sede=null;
-		Data dataAppuntamento=null;
-		Orario orarioAppuntamento=null;
+		Date dataAppuntamento=null;
+		Time orarioAppuntamento=null;
 		if(appuntamento!=null) {
-			sede=appuntamento.getSede();
-			dataAppuntamento=appuntamento.getData();
-			orarioAppuntamento=appuntamento.getOrario();
+			sede=appuntamento.getSede().toUpperCase();
+			dataAppuntamento=appuntamento.getData().getDataForDBMS();
+			orarioAppuntamento=appuntamento.getOrario().getTimeForDBMS();
 		}
 		try {
 			Connection conn = ConnectionFactory.getConnection();
@@ -32,9 +31,9 @@ public class ScritturaNotaDAO implements GenericProcedureDAO<Void>{
 			cs.setString(3, nota.getEsito().toUpperCase());
 			cs.setString(4, nota.getOperatore().toUpperCase());
 			cs.setDate(5, nota.getData().getDataForDBMS());
-			cs.setString(6, sede.toUpperCase());
-			cs.setDate(7, dataAppuntamento.getDataForDBMS());
-			cs.setTime(8, orarioAppuntamento.getTimeForDBMS());
+			cs.setString(6, sede);
+			cs.setDate(7, dataAppuntamento);
+			cs.setTime(8, orarioAppuntamento);
 			cs.execute();
 		}catch(SQLException e) {
 			throw new DAOException("Errore scrittura nota nel DB: "+e.getMessage());

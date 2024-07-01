@@ -12,7 +12,7 @@ public class LoginView {
         String username = reader.readLine();
         System.out.print("password: ");
         String password = reader.readLine();
-
+        System.out.println();
         return new Credentials(username, password, null);
     }
 }

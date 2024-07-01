@@ -31,7 +31,7 @@ public class ListaNoteDAO implements GenericProcedureDAO<List<Nota>>{
 				while(rs.next()) {
 					String cf=rs.getString("CodiceFiscaleCliente");
 					String codOfferta= rs.getString("CodiceOfferta");
-					String codOperatore= rs.getString("CodiceOperatore");
+					String codOperatore= rs.getString("Operatore");
 					Nota nota= new Nota(codOfferta,cf,codOperatore);
 					String esito= rs.getString("Esito");
 					nota.inserisciEsito(esito);

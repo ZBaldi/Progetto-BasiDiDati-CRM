@@ -3,23 +3,21 @@ package com.CRMThinClient.controller;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Scanner;
 import com.CRMThinClient.exception.DAOException;
-import com.CRMThinClient.main.Main;
 import com.CRMThinClient.model.DAO.ConnectionFactory;
 import com.CRMThinClient.model.DAO.ReportSegreteriaDAO;
 import com.CRMThinClient.model.DAO.EliminaOffertaDAO;
 import com.CRMThinClient.model.DAO.InserisciOffertaDAO;
 import com.CRMThinClient.model.DAO.MostraOfferteDAO;
 import com.CRMThinClient.model.DAO.RegistraClienteDAO;
-import com.CRMThinClient.model.Domain.SchemaRegex;
 import com.CRMThinClient.model.Domain.Cliente;
 import com.CRMThinClient.model.Domain.Data;
 import com.CRMThinClient.model.Domain.Indirizzo;
 import com.CRMThinClient.model.Domain.Offerta;
 import com.CRMThinClient.model.Domain.Report;
 import com.CRMThinClient.model.Domain.Role;
-import com.CRMThinClient.model.Domain.ValidatoreCampi;
+import com.CRMThinClient.model.bean.ClienteBean;
+import com.CRMThinClient.model.bean.OffertaBean;
 import com.CRMThinClient.view.SegreteriaView;
 
 public class SegreteriaController implements Controller{
@@ -51,11 +49,10 @@ public class SegreteriaController implements Controller{
 	}
 
 	public void deleteOffer() {
-		Scanner scanner= Main.getScanner();
 		try {
 			List<Offerta> offerte=new MostraOfferteDAO().execute(false);
 			if(offerte.isEmpty()) {
-				System.out.println("Non sono presenti offerte scadute da eliminare nel DB");
+				SegreteriaView.stampaMessaggio("Non sono presenti offerte scadute da eliminare nel DB\n");
 			}
 			else {
 				for(Offerta o: offerte) {
@@ -63,12 +60,16 @@ public class SegreteriaController implements Controller{
 				}
 				int choice=0;
 				while (true) {
-					 System.out.print("Inserisci il numero dell'offerta da eliminare es: >= 1 e <= "+offerte.size()+": ");
-					 choice = Integer.parseInt(scanner.nextLine());
+					SegreteriaView.stampaMessaggio("Inserisci il numero dell'offerta da eliminare es: >= 1 e <= "+offerte.size()+"(0 per annullare): ");
+					 choice = Integer.parseInt(SegreteriaView.inserisciInput());
 					 if (choice >= 1 && choice <= offerte.size()) {
 					     break;
 					 }
-					 System.out.println("Opzione invalida");
+					 else if(choice==0) {
+						 SegreteriaView.stampaMessaggio("Eliminazione annullata\n");
+						 return;
+					 }
+					 SegreteriaView.stampaMessaggio("Opzione invalida\n");
 				}
 				new EliminaOffertaDAO().execute(offerte.get(choice-1));
 			}
@@ -78,106 +79,25 @@ public class SegreteriaController implements Controller{
 	}
 
 	public void insertCustomer() {
-		Scanner scanner= Main.getScanner();
-		String cf;
-		while(true) {
-			System.out.print("Inserisci CF cliente: ");
-			cf= scanner.nextLine();
-			if(ValidatoreCampi.validatore(SchemaRegex.CF,cf)) {
-				break;
-			}
-			else {
-				System.out.println("CF non valido!");
-			}
+		ClienteBean bean=SegreteriaView.inserisciDatiCliente();
+		Data dataRegistrazione= new Data();
+		dataRegistrazione.dataCorrente();
+		Cliente cliente=new Cliente(bean.getNome(),bean.getCognome(),bean.getCf(),dataRegistrazione,bean.getDataDiNascita());
+		for(String s:bean.getTelefoni()) {
+			cliente.inserisciTelefono(s);
 		}
-		System.out.print("Inserisci nome cliente: ");
-		String nome= scanner.nextLine();
-		System.out.print("Inserisci cognome cliente: ");
-		String cognome= scanner.nextLine();
-		Data dataDiNascita=new Data();
-		while(true) {
-			System.out.print("Inserisci Data di Nascita Formato: gg-mm-aaaa: ");
-			try{
-				dataDiNascita.inserisciData(scanner.nextLine());
-				break;
-			}catch(Exception e) {
-				System.out.println("Riprova!");
-			}
+		for(String s:bean.getEmail()) {
+			cliente.inserisciEmail(s);
 		}
-		Data dataDiRegistrazione=new Data();
-		dataDiRegistrazione.dataCorrente();
-		Cliente cliente= new Cliente(nome,cognome,cf,dataDiRegistrazione,dataDiNascita);
-		String telefono;
-		while(true) {
-			System.out.print("Inserisci numero di telefono: ");
-			telefono= scanner.nextLine();
-			if(ValidatoreCampi.validatore(SchemaRegex.TELEFONO,telefono)) {
-				cliente.inserisciTelefono(telefono);
-				System.out.print("Finito di inserire i recapiti telefonici? Si/No: ");
-				if(scanner.nextLine().equalsIgnoreCase("Si")) {
-					break;
-				}
-			}
-			else {
-				System.out.println("Telefono non valido!");
-			}
-		}
-		String email;
-		while(true) {
-			System.out.print("Inserisci email: ");
-			email=scanner.nextLine();
-			if(ValidatoreCampi.validatore(SchemaRegex.EMAIL,email)) {
-				cliente.inserisciEmail(email);
-				System.out.print("Finito di inserire le email? Si/No: ");
-				if(scanner.nextLine().equalsIgnoreCase("Si")) {
-					break;
-				}
-			}
-			else {
-				System.out.println("Email non valida!");
-			}
-		}
-		StringBuilder indirizzo= new StringBuilder();
-		System.out.print("Inserisci via: ");
-		indirizzo.append(scanner.nextLine()+" ");
-		System.out.print("Inserisci civico: ");
-		indirizzo.append(scanner.nextLine()+" ");
-		String cap;
-		while(true) {
-			System.out.print("Inserisci cap: ");
-			cap= scanner.nextLine();
-			if(ValidatoreCampi.validatore(SchemaRegex.CAP,cap)) {
-				break;
-			}
-			else {
-				System.out.println("CAP non valido!");
-			}
-		}
-		indirizzo.append(cap);
-		System.out.print("Inserisci città: ");
-		String citta= scanner.nextLine();
-		String provincia;
-		while(true) {
-			System.out.print("Inserisci provincia: ");
-			provincia= scanner.nextLine();
-			if(ValidatoreCampi.validatore(SchemaRegex.PROVINCIA,provincia)) {
-				break;
-			}
-			else {
-				System.out.println("provincia non valida!");
-			}
-		}
-		System.out.print("Inserisci Paese: ");
-		String paese= scanner.nextLine();
-		Indirizzo luogo= new Indirizzo(indirizzo.toString(),citta,provincia,paese);
+		Indirizzo luogo= new Indirizzo(bean.getIndirizzo(),bean.getCitta(),bean.getProvincia(),bean.getPaese());
 		cliente.inserisciIndirizzo(luogo);
 		SegreteriaView.riepilogo(cliente.toString());
-		System.out.print("Vuoi confermare? Si/No: ");
-		if(scanner.nextLine().equalsIgnoreCase("Si")) {
+		SegreteriaView.stampaMessaggio("Vuoi confermare? Si/No: ");
+		if(SegreteriaView.inserisciInput().equalsIgnoreCase("Si")) {
 			saveCustomer(cliente);
 		}
 		else {
-			System.out.println("Modifiche scartate!");
+			SegreteriaView.stampaMessaggio("Modifiche scartate!\n");
 		}
 	}
 
@@ -190,31 +110,30 @@ public class SegreteriaController implements Controller{
 	}
 
 	public void doReport() {
-		Scanner scanner= Main.getScanner();
 		Data dataInizio=new Data();
 		while(true) {
-			System.out.print("Inserisci Data di inizio report Formato: gg-mm-aaaa: ");
+			SegreteriaView.stampaMessaggio("Inserisci Data di inizio report Formato: gg-mm-aaaa: ");
 			try{
-				dataInizio.inserisciData(scanner.nextLine());
+				dataInizio.inserisciData(SegreteriaView.inserisciInput());
 				break;
 			}catch(Exception e) {
-				System.out.println("Riprova!");
+				SegreteriaView.stampaMessaggio("Riprova!\n");
 			}
 		}
 		Data dataFine=new Data();
 		while(true) {
-			System.out.print("Inserisci Data di fine report Formato: gg-mm-aaaa: ");
+			SegreteriaView.stampaMessaggio("Inserisci Data di fine report Formato: gg-mm-aaaa: ");
 			try{
-				dataFine.inserisciData(scanner.nextLine());
+				dataFine.inserisciData(SegreteriaView.inserisciInput());
 				break;
 			}catch(Exception e) {
-				System.out.println("Riprova!");
+				SegreteriaView.stampaMessaggio("Riprova!\n");
 			}
 		}
 		try {
 			List<Report> reports= new ReportSegreteriaDAO().execute(dataInizio.getDataForDBMS(),dataFine.getDataForDBMS());
 			if(reports.isEmpty()) {
-				System.out.println("Nessun cliente è stato contattato nel periodo di tempo scelto");
+				SegreteriaView.stampaMessaggio("Nessun cliente è stato contattato nel periodo di tempo scelto\n");
 			}
 			else {
 				StringBuilder reportStr= new StringBuilder();
@@ -233,41 +152,17 @@ public class SegreteriaController implements Controller{
 	}
 
 	public void insertOffer() {
-		Scanner scanner= Main.getScanner();
-		String codiceOfferta;
-		while(true) {
-			System.out.print("Inserisci Codice Offerta: ");
-			codiceOfferta= scanner.nextLine();
-			if(ValidatoreCampi.validatore(SchemaRegex.CODICEOFFERTA,codiceOfferta)) {
-				break;
-			}
-			else {
-				System.out.println("Codice offerta non valido!");
-			}
-		}
-		System.out.print("Inserisci Nome Offerta: ");
-		String nomeOfferta= scanner.nextLine();
-		Offerta offerta= new Offerta(codiceOfferta,nomeOfferta);
-		System.out.print("Inserisci Descrizione Offerta: ");
-		offerta.inserisciDescrizione(scanner.nextLine());
-		Data data=new Data();
-		while(true) {
-			System.out.print("Inserisci Data di Scadenza Offerta Formato: gg-mm-aaaa: ");
-			try{
-				data.inserisciData(scanner.nextLine());
-				break;
-			}catch(Exception e) {
-				System.out.println("Riprova!");
-			}
-		}
-		offerta.inserisciScadenza(data);
+		OffertaBean bean= SegreteriaView.inserisciDatiOfferta();
+		Offerta offerta= new Offerta(bean.getCodiceOfferta(),bean.getNomeOfferta());
+		offerta.inserisciDescrizione(bean.getDescrizione());
+		offerta.inserisciScadenza(bean.getDataDiScadenza());
 		SegreteriaView.riepilogo(offerta.toString());
-		System.out.print("Vuoi confermare? Si/No: ");
-		if(scanner.nextLine().equalsIgnoreCase("Si")) {
+		SegreteriaView.stampaMessaggio("Vuoi confermare? Si/No: ");
+		if(SegreteriaView.inserisciInput().equalsIgnoreCase("Si")) {
 			saveOffer(offerta);
 		}
 		else {
-			System.out.println("Offerta scartata!");
+			SegreteriaView.stampaMessaggio("Offerta scartata!\n");
 		}
 	}
 
