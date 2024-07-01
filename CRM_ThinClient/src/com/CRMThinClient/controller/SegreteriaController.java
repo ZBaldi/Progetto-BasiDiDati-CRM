@@ -18,6 +18,7 @@ import com.CRMThinClient.model.Domain.Report;
 import com.CRMThinClient.model.Domain.Role;
 import com.CRMThinClient.model.bean.ClienteBean;
 import com.CRMThinClient.model.bean.OffertaBean;
+import com.CRMThinClient.view.OperatoreView;
 import com.CRMThinClient.view.SegreteriaView;
 
 public class SegreteriaController implements Controller{
@@ -55,9 +56,11 @@ public class SegreteriaController implements Controller{
 				SegreteriaView.stampaMessaggio("Non sono presenti offerte scadute da eliminare nel DB\n");
 			}
 			else {
+				StringBuilder stringa=new StringBuilder();
 				for(Offerta o: offerte) {
-					SegreteriaView.riepilogo(o.toString());
+					stringa.append(o.toString()+"\n\n---------------------------------\n\n");
 				}
+				SegreteriaView.riepilogo(stringa.toString());
 				int choice=0;
 				while (true) {
 					SegreteriaView.stampaMessaggio("Inserisci il numero dell'offerta da eliminare es: >= 1 e <= "+offerte.size()+"(0 per annullare): ");
@@ -72,6 +75,7 @@ public class SegreteriaController implements Controller{
 					 SegreteriaView.stampaMessaggio("Opzione invalida\n");
 				}
 				new EliminaOffertaDAO().execute(offerte.get(choice-1));
+				OperatoreView.stampaMessaggio("Eliminazione effettuata!\n");
 			}
 		} catch (DAOException e) {
 			System.err.println(e.getMessage());
@@ -95,6 +99,7 @@ public class SegreteriaController implements Controller{
 		SegreteriaView.stampaMessaggio("Vuoi confermare? Si/No: ");
 		if(SegreteriaView.inserisciInput().equalsIgnoreCase("Si")) {
 			saveCustomer(cliente);
+			OperatoreView.stampaMessaggio("Cliente registrato!\n");
 		}
 		else {
 			SegreteriaView.stampaMessaggio("Modifiche scartate!\n");
@@ -131,20 +136,12 @@ public class SegreteriaController implements Controller{
 			}
 		}
 		try {
-			List<Report> reports= new ReportSegreteriaDAO().execute(dataInizio.getDataForDBMS(),dataFine.getDataForDBMS());
-			if(reports.isEmpty()) {
+			Report report= new ReportSegreteriaDAO().execute(dataInizio.getDataForDBMS(),dataFine.getDataForDBMS());
+			if(report.getTotale()==0) {
 				SegreteriaView.stampaMessaggio("Nessun cliente è stato contattato nel periodo di tempo scelto\n");
 			}
 			else {
-				StringBuilder reportStr= new StringBuilder();
-				reportStr.append("Clienti contattati: "+reports.size()+"\n");
-				for(int i=0; i<reports.size();i++) {
-					reportStr.append(reports.get(i).toString());
-					if(i+1 != reports.size()) {
-						reportStr.append("\n");
-					}
-				}
-				SegreteriaView.riepilogo(reportStr.toString());
+				SegreteriaView.riepilogo(report.toString());
 			}
 		} catch (DAOException e) {
 			System.err.println(e.getMessage());
@@ -160,6 +157,7 @@ public class SegreteriaController implements Controller{
 		SegreteriaView.stampaMessaggio("Vuoi confermare? Si/No: ");
 		if(SegreteriaView.inserisciInput().equalsIgnoreCase("Si")) {
 			saveOffer(offerta);
+			OperatoreView.stampaMessaggio("Offerta inserita!\n");
 		}
 		else {
 			SegreteriaView.stampaMessaggio("Offerta scartata!\n");

@@ -1,25 +1,37 @@
 package com.CRMThinClient.model.Domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Report {
-	private Cliente cliente=null;
-	private int contattato;
+	private int totale;
+	private List<TriplaReport> lista= new ArrayList<TriplaReport>();
 	
-	public Report(Cliente cliente, int contattato) {
-		this.cliente=cliente;
-		this.contattato=contattato;
+	public void setTotale(int totale) {
+		this.totale = totale;
 	}
 
-	public Cliente getCliente() {
-		return cliente;
-	}
-
-	public int getContattato() {
-		return contattato;
+	public void inserisciTripla(TriplaReport t) {
+		lista.add(t);
 	}
 	
+	public int getTotale() {
+		return totale;
+	}
 
+	public List<TriplaReport> getLista() {
+		return lista;
+	}
+	
 	@Override
 	public String toString() {
-		return cliente.getNome()+"|"+cliente.getCognome()+"|"+cliente.getCf()+":"+contattato;
+		StringBuilder stringa=new StringBuilder();
+		stringa.append("Totale clienti contattati: "+totale+"\n\n");
+		for(TriplaReport t: lista) {
+			stringa.append(t.toString()+"\n\n---------------------------------\n\n");
+		}
+		stringa.deleteCharAt(stringa.length()-1);
+		return stringa.toString();
 	}
+	
 }

@@ -65,9 +65,11 @@ public class OperatoreController implements Controller{
 				OperatoreView.stampaMessaggio("Non sono presenti offerte valide nel DB\n");
 			}
 			else {
+				StringBuilder stringa= new StringBuilder();
 				for(Offerta o: offerte) {
-					OperatoreView.riepilogo(o.toString());
+					stringa.append(o.toString()+"\n\n---------------------------------\n\n");
 				}
+				OperatoreView.riepilogo(stringa.toString());
 			}
 		} catch (DAOException e) {
 			System.err.println(e.getMessage());
@@ -81,6 +83,7 @@ public class OperatoreController implements Controller{
 		OperatoreView.stampaMessaggio("Vuoi confermare? Si/No: ");
 		if(OperatoreView.inserisciInput().equalsIgnoreCase("Si")) {
 			saveAcceptedOffer(offerta);
+			OperatoreView.stampaMessaggio("Inserimento effettuato!\n");
 		}
 		else {
 			OperatoreView.stampaMessaggio("Inserimento annullato!\n");
@@ -111,6 +114,7 @@ public class OperatoreController implements Controller{
 		OperatoreView.stampaMessaggio("Vuoi confermare? Si/No: ");
 		if(OperatoreView.inserisciInput().equalsIgnoreCase("Si")) {
 			saveNote(nota);
+			OperatoreView.stampaMessaggio("Nota salvata!\n");
 		}
 		else {
 			OperatoreView.stampaMessaggio("Nota scartata!\n");
@@ -132,9 +136,11 @@ public class OperatoreController implements Controller{
 		try {
 			List<Nota> note=new ListaNoteDAO().execute(cf);
 			if(note.isEmpty()==false) {
+				StringBuilder stringa= new StringBuilder();
 				for(Nota n: note) {
-					OperatoreView.riepilogo(n.toString());
+					stringa.append(n.toString()+"\n\n---------------------------------\n\n");
 				}
+				OperatoreView.riepilogo(stringa.toString());
 			}
 			else{
 				OperatoreView.stampaMessaggio("Il cliente non ha note associate!\n");
@@ -152,9 +158,11 @@ public class OperatoreController implements Controller{
 			}
 			else {
 				showRecapiti(clienti);
+				StringBuilder stringa= new StringBuilder();
 				for(Cliente c: clienti) {
-					OperatoreView.riepilogo(c.toString());
+					stringa.append(c.toString()+"\n\n---------------------------------\n\n");
 				}
+				OperatoreView.riepilogo(stringa.toString());
 			}
 		} catch (DAOException e) {
 			System.err.println(e.getMessage());
