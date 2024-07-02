@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.List;
 import com.CRMThinClient.exception.DAOException;
 import com.CRMThinClient.model.DAO.ConnectionFactory;
+import com.CRMThinClient.model.DAO.EliminaClienteDAO;
 import com.CRMThinClient.model.DAO.ReportSegreteriaDAO;
 import com.CRMThinClient.model.DAO.EliminaOffertaDAO;
 import com.CRMThinClient.model.DAO.InserisciOffertaDAO;
@@ -16,6 +17,8 @@ import com.CRMThinClient.model.Domain.Indirizzo;
 import com.CRMThinClient.model.Domain.Offerta;
 import com.CRMThinClient.model.Domain.Report;
 import com.CRMThinClient.model.Domain.Role;
+import com.CRMThinClient.model.Domain.SchemaRegex;
+import com.CRMThinClient.model.Domain.ValidatoreCampi;
 import com.CRMThinClient.model.bean.ClienteBean;
 import com.CRMThinClient.model.bean.OffertaBean;
 import com.CRMThinClient.view.OperatoreView;
@@ -43,7 +46,8 @@ public class SegreteriaController implements Controller{
                 case 2 -> doReport();
                 case 3 -> insertCustomer();
                 case 4 -> deleteOffer();
-                case 5 -> System.exit(0);
+                case 5 -> deleteCustomer();
+                case 6 -> System.exit(0);
                 default -> throw new RuntimeException("Invalid choice");
             }
         }
@@ -75,7 +79,7 @@ public class SegreteriaController implements Controller{
 					 SegreteriaView.stampaMessaggio("Opzione invalida\n");
 				}
 				new EliminaOffertaDAO().execute(offerte.get(choice-1));
-				OperatoreView.stampaMessaggio("Eliminazione effettuata!\n");
+				SegreteriaView.stampaMessaggio("Eliminazione effettuata!\n");
 			}
 		} catch (DAOException e) {
 			System.err.println(e.getMessage());
@@ -135,6 +139,10 @@ public class SegreteriaController implements Controller{
 				SegreteriaView.stampaMessaggio("Riprova!\n");
 			}
 		}
+		if(dataFine.getDataForDBMS().before(dataInizio.getDataForDBMS())) {
+			SegreteriaView.stampaMessaggio("Hai inserito la data di inizio maggiore di quella di fine!\n");
+			return;
+		}
 		try {
 			Report report= new ReportSegreteriaDAO().execute(dataInizio.getDataForDBMS(),dataFine.getDataForDBMS());
 			if(report.getTotale()==0) {
@@ -167,6 +175,26 @@ public class SegreteriaController implements Controller{
 	private void saveOffer(Offerta offerta) {
 		try {
 			new InserisciOffertaDAO().execute(offerta);
+		}catch(DAOException e) {
+			System.err.println(e.getMessage());
+		}
+	}
+	
+	public void deleteCustomer() {
+		String cf;
+		while(true) {
+			SegreteriaView.stampaMessaggio("Inserisci CF cliente: ");
+			cf= SegreteriaView.inserisciInput();
+			if(ValidatoreCampi.validatore(SchemaRegex.CF, cf)) {
+				break;
+			}
+			else {
+				SegreteriaView.stampaMessaggio("CF non valido!\n");
+			}
+		}
+		try {
+			new EliminaClienteDAO().execute(cf.toUpperCase());
+			SegreteriaView.stampaMessaggio("Eliminazione effettuata!\n");
 		}catch(DAOException e) {
 			System.err.println(e.getMessage());
 		}

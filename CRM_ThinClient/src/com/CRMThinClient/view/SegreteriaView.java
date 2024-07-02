@@ -16,13 +16,14 @@ public class SegreteriaView {
 							"2) Effettua il report dei clienti\n"+
 							"3) Registra nuovo cliente\n"+
 							"4) Elimina un'offerta\n"+
-							"5) Esci\n\n");
+							"5) Elimina un cliente\n"+
+							"6) Esci\n\n");
 		
 		int choice = 0;
 		while (true) {
 			stampaMessaggio("Perfavore inserisci la tua scelta: ");
 			 choice = Integer.parseInt(inserisciInput());
-			 if (choice >= 1 && choice <= 5) {
+			 if (choice >= 1 && choice <= 6) {
 			     break;
 			 }
 			 stampaMessaggio("Opzione invalida\n");
