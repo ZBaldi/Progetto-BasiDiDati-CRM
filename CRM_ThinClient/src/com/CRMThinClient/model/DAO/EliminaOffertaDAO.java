@@ -10,7 +10,7 @@ import com.CRMThinClient.model.Domain.Offerta;
 public class EliminaOffertaDAO implements GenericProcedureDAO<Void>{
 
 	@Override
-	public Void execute(Object... params) throws DAOException{
+	public Void execute(Object... params) throws DAOException{  //METODO PER ELIMINARE UN'OFFERTA DAL DB
 		try {
 			Connection conn = ConnectionFactory.getConnection();
 			CallableStatement cs = conn.prepareCall("{call elimina_offerte(?)}");

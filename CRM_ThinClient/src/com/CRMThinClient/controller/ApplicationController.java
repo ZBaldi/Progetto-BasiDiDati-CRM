@@ -16,7 +16,7 @@ public class ApplicationController implements Controller {
         }
 
         switch(cred.getRole()) {
-            case OPERATORE : OperatoreController.setId(cred.getUsername());
+            case OPERATORE : OperatoreController.setId(cred.getUsername());  //PASSO L'USERNAME DELL'OPERATORE AL CONTROLLER DELL'OPERATORE
             				 new OperatoreController().start();
             				 break;
             case SEGRETERIA : new SegreteriaController().start();

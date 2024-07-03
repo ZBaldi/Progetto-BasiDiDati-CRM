@@ -8,7 +8,7 @@ import java.time.format.DateTimeParseException;
 public class Data {
 	private LocalDate data;
 	
-	public void inserisciData(String str) throws Exception {
+	public void inserisciData(String str) throws Exception {  //METODO PER INSERIRE LA DATA SECONDO IL PATTERN ITALIANO
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         while(true) {
         	try {
@@ -21,17 +21,17 @@ public class Data {
         }
 	}
 	
-	public void dataCorrente() {
+	public void dataCorrente() {  //METODO PER ASSOCIARE LA DATA CORRENTE
 		data=LocalDate.now();
 	}
 	
-	public Date getDataForDBMS() {
+	public Date getDataForDBMS() {  //METODO PER OTTENERE LA DATA NEL FORMATO DEL DBMS
 	    Date sqlDate = Date.valueOf(this.data);
 	    return sqlDate;
 	}
 	
 	@Override
-	public String toString() {
+	public String toString() {  //METODO PER RESTITUIRE COME STRINGA LA DATA
 		 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 	     return data.format(formatter);
 	}

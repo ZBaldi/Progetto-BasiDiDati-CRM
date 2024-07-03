@@ -31,14 +31,14 @@ public class OperatoreView {
 		return choice;
     }
 	
-	public static void riepilogo(String s) {
+	public static void riepilogo(String s) {  //METODO PER EFFETTUARE IL RIEPILOGO DEI DATI
 		stampaMessaggio("--------------------------------\n"+
 						"|         |RIEPILOGO|          |\n"+
 						"--------------------------------\n\n"+
 						s+"\n\n");
 	}
 	
-	public static OffertaAccettataBean inserisciDatiOffertaAccettata() {
+	public static OffertaAccettataBean inserisciDatiOffertaAccettata() { //METODO PER INSERIRE I DATI DI UN'OFFERTA ACCETTATA
 		OffertaAccettataBean bean= new OffertaAccettataBean();
 		String codiceOfferta;
 		while(true) {
@@ -76,7 +76,7 @@ public class OperatoreView {
 		return bean;
 	}
 	
-	public static NotaBean inserisciDatiNota() {
+	public static NotaBean inserisciDatiNota() { //METODO PER INSERIRE I DATI DI UNA NOTA
 		NotaBean bean= new NotaBean();
 		String codiceOfferta;
 		while(true) {
@@ -132,11 +132,11 @@ public class OperatoreView {
 		return bean;
 	}
 	
-	public static String inserisciInput() {
+	public static String inserisciInput() {  //METODO PER OTTENERE UN INPUT DALLA VIEW
 		return Main.getScanner().nextLine();
 	}
 	
-	public static void stampaMessaggio(String s) {
+	public static void stampaMessaggio(String s) {  //METODO PER STAMPARE UN MESSAGGIO NELLA VIEW
 		System.out.print(s);
 	}
 	

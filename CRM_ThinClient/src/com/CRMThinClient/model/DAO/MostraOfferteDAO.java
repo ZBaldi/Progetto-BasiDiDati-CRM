@@ -16,7 +16,7 @@ import com.CRMThinClient.model.Domain.Offerta;
 public class MostraOfferteDAO implements GenericProcedureDAO<List<Offerta>>{
 
 	@Override
-	public List<Offerta> execute(Object... params) throws DAOException{
+	public List<Offerta> execute(Object... params) throws DAOException{  //METODO PER OTTENERE LA LISTA DELLE OFFERTE VALIDE DAL DB
 		List<Offerta> offerte= new ArrayList<Offerta>();
 		try {
 			Connection conn = ConnectionFactory.getConnection();

@@ -19,7 +19,7 @@ import com.CRMThinClient.model.Domain.Orario;
 public class ListaNoteDAO implements GenericProcedureDAO<List<Nota>>{
 
 	@Override
-	public List<Nota> execute(Object... params) throws DAOException { 
+	public List<Nota> execute(Object... params) throws DAOException {   //METODO PER OTTENERE LA LISTA DELLE NOTE DI UN CLIENTE DAL DB
 		List<Nota> note= new ArrayList<Nota>();
 		try {
 			Connection conn = ConnectionFactory.getConnection();
@@ -64,7 +64,7 @@ public class ListaNoteDAO implements GenericProcedureDAO<List<Nota>>{
 						} catch (Exception e) {
 							System.err.println("Errore formattazione orario appuntamento DB!");
 						}
-		                Appuntamento appuntamento=new Appuntamento(cf);
+		                Appuntamento appuntamento=new Appuntamento();
 		                appuntamento.inserisciSede(sede);
 		                appuntamento.inserisciDataEOrario(dataAppuntamento, orarioAppuntamento);
 		                nota.allegaAppuntamento(appuntamento);

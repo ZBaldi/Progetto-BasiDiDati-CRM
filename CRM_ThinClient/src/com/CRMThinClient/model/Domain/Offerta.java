@@ -36,7 +36,7 @@ public class Offerta {
 	}
 	
 	@Override
-	public String toString() {
+	public String toString() {  //METODO PER RESTITUIRE COME STRINGA LE INFORMAZIONI DELL'OFFERTA
 		return "Codice offerta: "+codiceOfferta+"\n"+"Nome offerta: "+nomeOfferta+"\n"+"Data di scadenza: "+dataDiScadenza.toString()+"\n"+"Descrizione: "+descrizione;
 	}
 }

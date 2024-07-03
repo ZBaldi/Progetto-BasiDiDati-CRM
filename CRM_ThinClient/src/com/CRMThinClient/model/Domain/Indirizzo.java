@@ -30,7 +30,7 @@ public class Indirizzo {
 	}
 	
 	@Override
-	public String toString() {
+	public String toString() { //METODO PER RESTITUIRE COME STRINGA LE INFORMAZIONI DELL'INDIRIZZO
 		return indirizzo+" "+citta+" "+provincia+" "+paese;
 	}
 }

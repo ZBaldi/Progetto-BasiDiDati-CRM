@@ -17,7 +17,7 @@ import com.CRMThinClient.model.Domain.Indirizzo;
 public class MostraClientiDAO implements GenericProcedureDAO<List<Cliente>>{
 
 	@Override
-	public List<Cliente> execute(Object... params) throws DAOException{
+	public List<Cliente> execute(Object... params) throws DAOException{  //METODO PER OTTENERE LA LISTA DEI CLIENTI DAL DB
 		List<Cliente> clienti= new ArrayList<Cliente>();
 		try {
 			Connection conn = ConnectionFactory.getConnection();

@@ -24,7 +24,7 @@ public class TriplaReport {
 	}
 	
 	@Override
-	public String toString() {
+	public String toString() {  //METODO PER RESTITUIRE COME STRINGA LE INFORMAZIONI DELLA TRIPLA (CLIENTE, NUMERO DI CONTATTI, NUMERO DI OFFERTE ACCETTATE)
 		return cliente.getNome()+"\n"+cliente.getCognome()+"\n"+cliente.getCf()+"\n"+"Contattato: "+contattato+" volte"+"\n"+"Accettato: "+accettato+" offerte";
 	}
 	

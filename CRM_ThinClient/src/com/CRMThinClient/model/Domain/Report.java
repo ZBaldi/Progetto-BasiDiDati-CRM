@@ -24,7 +24,7 @@ public class Report {
 	}
 	
 	@Override
-	public String toString() {
+	public String toString() {  //METODO PER RESTITUIRE COME STRINGA LE INFORMAZIONI DEL REPORT DEI CLIENTI
 		StringBuilder stringa=new StringBuilder();
 		stringa.append("Totale clienti contattati: "+totale+"\n\n");
 		for(TriplaReport t: lista) {

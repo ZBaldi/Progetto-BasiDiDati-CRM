@@ -10,7 +10,7 @@ import com.CRMThinClient.model.Domain.Cliente;
 public class MostraEmailDAO implements GenericProcedureDAO<Void>{
 	
 	@Override
-	public Void execute(Object... params) throws DAOException {
+	public Void execute(Object... params) throws DAOException {  //METODO PER OTTENERE LA LISTA DELLE EMAIL DAL DB
 		Cliente cliente= (Cliente) params[0];
 		try {
 			Connection conn = ConnectionFactory.getConnection();

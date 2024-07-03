@@ -30,7 +30,7 @@ public class OffertaAccettata{
 	}
 	
 	@Override
-	public String toString() {
+	public String toString() {  //METODO PER RESTITUIRE COME STRINGA LE INFORMAZIONI DELL'OFFERTA ACCETTATA
 		return "Codice operatore: "+codiceOperatore+"\n"+"Codice cliente: "+codiceCliente+"\n"+"Codice offerta: "+codiceOfferta+"\n"+"Data di accettazione: "+dataDiAccettazione.toString();
 	}
 }

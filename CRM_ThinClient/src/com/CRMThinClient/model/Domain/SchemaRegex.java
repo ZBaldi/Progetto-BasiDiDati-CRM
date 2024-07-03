@@ -1,6 +1,6 @@
 package com.CRMThinClient.model.Domain;
 
-public enum SchemaRegex {
+public enum SchemaRegex {  //ENUM PER RESTITUIRE L'ESPRESSIONE REGOLARE CORRETTA PER IL TIPO DI DATO DA VERIFICARE
 	EMAIL("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"),
 	TELEFONO("^\\+\\d{1,3}\\s\\d{10}$"),
 	CF("^[A-Za-z]{6}\\d{2}[A-Za-z]\\d{2}[A-Za-z]\\d{3}[A-Za-z]$"),

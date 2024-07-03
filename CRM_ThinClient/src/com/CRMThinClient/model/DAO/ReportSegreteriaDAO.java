@@ -13,7 +13,7 @@ import com.CRMThinClient.model.Domain.TriplaReport;
 public class ReportSegreteriaDAO implements GenericProcedureDAO<Report>{
 
 	@Override
-	public Report execute(Object... params) throws DAOException{
+	public Report execute(Object... params) throws DAOException{  //METODO PER OTTENERE I RISULTATI DEL REPORT DAL DB
 		Report report= new Report();
 		try {
 			Connection conn = ConnectionFactory.getConnection();

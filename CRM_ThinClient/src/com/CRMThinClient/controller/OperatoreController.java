@@ -58,7 +58,7 @@ public class OperatoreController implements Controller{
         }
 	}
 
-	public void showOffers() {
+	public void showOffers() {  //MOSTRA LE OFFERTE VALIDE DA PROPORRE AI CLIENTI
 		try {
 			List<Offerta> offerte=new MostraOfferteDAO().execute(true);
 			if(offerte.isEmpty()) {
@@ -76,7 +76,7 @@ public class OperatoreController implements Controller{
 		}
 	}
 
-	public void insertAcceptedOffer() {
+	public void insertAcceptedOffer() {  //INSERISCE NEL DB LE INFORMAZIONI RIGUARDANTI L'OFFERTA ACCETTATA DAL CLIENTE
 		OffertaAccettataBean bean=OperatoreView.inserisciDatiOffertaAccettata();
 		OffertaAccettata offerta= new OffertaAccettata(idOperatore,bean.getCliente(),bean.getCodiceOfferta(),bean.getDataContratto());
 		OperatoreView.riepilogo(offerta.toString());
@@ -90,7 +90,7 @@ public class OperatoreController implements Controller{
 		}
 	}
 
-	private void saveAcceptedOffer(OffertaAccettata offerta) {
+	private void saveAcceptedOffer(OffertaAccettata offerta) {  //METODO PRIVATO CHIAMATO PER COMUNICARE CON IL DAO DOPO AVER INSERITO I DATI DELL'OFFERTA ACCETTATA
 		try {
 			new InserisciOffertaAccettataDAO().execute(offerta);
 		} catch (DAOException e) {
@@ -98,14 +98,14 @@ public class OperatoreController implements Controller{
 		}
 	}
 
-	public void writeNote() {
+	public void writeNote() {  //INSERISCE LE INFORMAZIONI DELLA NOTA DA SCRIVERE NEL DB
 		NotaBean bean=OperatoreView.inserisciDatiNota();
 		String cf= bean.getCodiceCliente();
 		Nota nota= new Nota(bean.getCodiceOfferta(),cf,idOperatore);
 		nota.inserisciEsito(bean.getEsito());
 		nota.inserisciData(true, null);
 		if(bean.getSede()!=null) {
-			Appuntamento appuntamento= new Appuntamento(cf);
+			Appuntamento appuntamento= new Appuntamento();
 			appuntamento.inserisciSede(bean.getSede());
 			appuntamento.inserisciDataEOrario(bean.getDataAppuntamento(), bean.getOrarioAppuntamento());
 			nota.allegaAppuntamento(appuntamento);
@@ -121,7 +121,7 @@ public class OperatoreController implements Controller{
 		}
 	}
 
-	public void showNotes() {
+	public void showNotes() { //MOSTRA LE NOTE ASSOCIATE AD UN CLIENTE
 		String cf;
 		while(true) {
 			OperatoreView.stampaMessaggio("Inserisci CF cliente: ");
@@ -150,7 +150,7 @@ public class OperatoreController implements Controller{
 		}
 	}
 
-	public void showCustomers() {
+	public void showCustomers() {  //MOSTRA I CLIENTI DA CONTATTARE
 		try {
 			List<Cliente> clienti=new MostraClientiDAO().execute();
 			if(clienti.isEmpty()) {
@@ -169,7 +169,7 @@ public class OperatoreController implements Controller{
 		}
 	}
 
-	private void showRecapiti(List<Cliente> clienti) {
+	private void showRecapiti(List<Cliente> clienti) {  //METODO PRIVATO CHIAMATO PER OTTENERE I RECAPITI TELEFONI E LE EMAIL DEI CLIENTI DAL DB
 		try {
 			for(Cliente c:clienti) {
 				new MostraTelefoniDAO().execute(c);
@@ -186,7 +186,7 @@ public class OperatoreController implements Controller{
 		}
 	}
 
-	private void saveNote(Nota nota) {
+	private void saveNote(Nota nota) {  //METODO PRIVATO CHIAMATO PER COMUNICARE CON IL DAO DOPO AVER INSERITO I DATI DELLA NOTA
 		try {
 			new ScritturaNotaDAO().execute(nota);
 		} catch (DAOException e) {

@@ -6,7 +6,7 @@ import com.CRMThinClient.model.Domain.Data;
 import com.CRMThinClient.model.Domain.SchemaRegex;
 import com.CRMThinClient.model.Domain.ValidatoreCampi;
 
-public class ClienteBean {
+public class ClienteBean {  //INCAPSULA LA CLASSE CLIENTE ED INDIRIZZO
 	private String nome;
 	private String cognome;
 	private String cf;

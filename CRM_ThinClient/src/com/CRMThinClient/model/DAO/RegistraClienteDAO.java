@@ -10,7 +10,7 @@ import com.CRMThinClient.model.Domain.Cliente;
 public class RegistraClienteDAO implements GenericProcedureDAO<Void>{
 
 	@Override
-	public Void execute(Object... params) throws DAOException{
+	public Void execute(Object... params) throws DAOException{ //METODO PER REGISTRARE UN NUOVO CLIENTE NL DB
 		Cliente cliente= (Cliente)params[0];
 		StringBuilder telefoni= new StringBuilder();
 		for(String s: cliente.getTelefoni()) {

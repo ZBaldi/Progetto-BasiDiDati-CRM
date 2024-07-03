@@ -10,7 +10,7 @@ import com.CRMThinClient.model.Domain.Offerta;
 public class InserisciOffertaDAO implements GenericProcedureDAO<Void>{
 
 	@Override
-	public Void execute(Object... params) throws DAOException{
+	public Void execute(Object... params) throws DAOException{  //METODO PER INSERIRE UN'OFFERTA NEL DB
 		Offerta offerta= (Offerta) params[0];
 		try {
 			Connection conn = ConnectionFactory.getConnection();

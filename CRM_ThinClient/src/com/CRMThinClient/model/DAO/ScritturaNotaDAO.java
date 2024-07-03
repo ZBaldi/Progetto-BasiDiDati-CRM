@@ -12,7 +12,7 @@ import com.CRMThinClient.model.Domain.Nota;
 public class ScritturaNotaDAO implements GenericProcedureDAO<Void>{
 
 	@Override
-	public Void execute(Object... params) throws DAOException{
+	public Void execute(Object... params) throws DAOException{  //METODO PER INSERIRE UNA NOTA NEL DB
 		Nota nota= (Nota) params[0];
 		Appuntamento appuntamento= nota.getAppuntamento();
 		String sede=null;

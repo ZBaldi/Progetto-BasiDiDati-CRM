@@ -4,7 +4,7 @@ import com.CRMThinClient.model.Domain.Data;
 import com.CRMThinClient.model.Domain.SchemaRegex;
 import com.CRMThinClient.model.Domain.ValidatoreCampi;
 
-public class OffertaBean {
+public class OffertaBean {  //INCAPSULA LA CLASSE OFFERTA
 	
 	private String codiceOfferta;
 	private String nomeOfferta;

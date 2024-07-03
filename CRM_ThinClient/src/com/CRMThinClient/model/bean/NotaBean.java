@@ -5,7 +5,7 @@ import com.CRMThinClient.model.Domain.Orario;
 import com.CRMThinClient.model.Domain.SchemaRegex;
 import com.CRMThinClient.model.Domain.ValidatoreCampi;
 
-public class NotaBean {
+public class NotaBean {   //INCAPSULA LA CLASSE NOTA ED APPUNTAMENTO
 	private String codiceOfferta;
 	private String codiceCliente;
 	private String esito;

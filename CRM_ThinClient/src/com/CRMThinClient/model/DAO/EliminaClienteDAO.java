@@ -8,7 +8,7 @@ import com.CRMThinClient.exception.DAOException;
 public class EliminaClienteDAO implements GenericProcedureDAO<Void>{
 
 	@Override
-	public Void execute(Object... params) throws DAOException{
+	public Void execute(Object... params) throws DAOException{  //METODO PER ELIMINARE UN CLIENTE DAL DB
 		try {
 			Connection conn = ConnectionFactory.getConnection();
 			CallableStatement cs = conn.prepareCall("{call elimina_cliente(?)}");

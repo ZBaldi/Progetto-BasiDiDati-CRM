@@ -53,7 +53,7 @@ public class SegreteriaController implements Controller{
         }
 	}
 
-	public void deleteOffer() {
+	public void deleteOffer() {  //MOSTRA LE OFFERTE ELIMINABILI DAL DB ED ELIMINA QUELLA SELEZIONATA
 		try {
 			List<Offerta> offerte=new MostraOfferteDAO().execute(false);
 			if(offerte.isEmpty()) {
@@ -86,7 +86,7 @@ public class SegreteriaController implements Controller{
 		}
 	}
 
-	public void insertCustomer() {
+	public void insertCustomer() {  //INSERISCE NEL DB I DATI DI UN NUOVO CLIENTE
 		ClienteBean bean=SegreteriaView.inserisciDatiCliente();
 		Data dataRegistrazione= new Data();
 		dataRegistrazione.dataCorrente();
@@ -110,7 +110,7 @@ public class SegreteriaController implements Controller{
 		}
 	}
 
-	private void saveCustomer(Cliente cliente) {
+	private void saveCustomer(Cliente cliente) {  //METODO PRIVATO CHE COMUNICA CON IL DAO DOPO AVER INSERITO I DATI DEL CLIENTE
 		try {
 			new RegistraClienteDAO().execute(cliente);
 		}catch(DAOException e) {
@@ -118,7 +118,7 @@ public class SegreteriaController implements Controller{
 		}
 	}
 
-	public void doReport() {
+	public void doReport() {  //EFFETTUA IL REPORT DEI CLIENTI E MOSTRA I RISULTATI
 		Data dataInizio=new Data();
 		while(true) {
 			SegreteriaView.stampaMessaggio("Inserisci Data di inizio report Formato: gg-mm-aaaa: ");
@@ -156,7 +156,7 @@ public class SegreteriaController implements Controller{
 		}
 	}
 
-	public void insertOffer() {
+	public void insertOffer() {  //INSERISCE I DATI DELL'OFFERTA NEL DB
 		OffertaBean bean= SegreteriaView.inserisciDatiOfferta();
 		Offerta offerta= new Offerta(bean.getCodiceOfferta(),bean.getNomeOfferta());
 		offerta.inserisciDescrizione(bean.getDescrizione());
@@ -172,7 +172,7 @@ public class SegreteriaController implements Controller{
 		}
 	}
 
-	private void saveOffer(Offerta offerta) {
+	private void saveOffer(Offerta offerta) {  //METODO PRIVATO CHE COMUNICA CON IL DAO DOPO AVER INSERITO I DATI DELL'OFFERTA
 		try {
 			new InserisciOffertaDAO().execute(offerta);
 		}catch(DAOException e) {
@@ -180,7 +180,7 @@ public class SegreteriaController implements Controller{
 		}
 	}
 	
-	public void deleteCustomer() {
+	public void deleteCustomer() {  //ELIMINA UN CLIENTE DAL DB SE POSSIBILE
 		String cf;
 		while(true) {
 			SegreteriaView.stampaMessaggio("Inserisci CF cliente: ");

@@ -1,14 +1,9 @@
 package com.CRMThinClient.model.Domain;
 
 public class Appuntamento {
-	private String codiceCliente;
 	private String sede;
 	private Data dataAppuntamento;
 	private Orario orarioAppuntamento;
-	
-	public Appuntamento(String codiceCliente) {
-		this.codiceCliente=codiceCliente;
-	}
 	
 	public void inserisciSede(String sede) {
 		this.sede=sede;
@@ -32,7 +27,7 @@ public class Appuntamento {
 	}
 	
 	@Override
-	public String toString(){
-		return "Codice cliente: "+codiceCliente+" "+"Sede: "+sede+"\n"+"Data appuntamento: "+dataAppuntamento.toString()+"\n"+"Orario appuntamento: "+orarioAppuntamento.toString();
+	public String toString(){  //METODO PER RESTITUIRE COME STRINGA LE INFORMAZIONI DELL'APPUNTAMENTO
+		return "Sede: "+sede+"\n"+"Data appuntamento: "+dataAppuntamento.toString()+"\n"+"Orario appuntamento: "+orarioAppuntamento.toString();
 	}
 }
