@@ -20,7 +20,7 @@ public class ListaNoteDAO implements GenericProcedureDAO<List<Nota>>{
 
 	@Override
 	public List<Nota> execute(Object... params) throws DAOException {   //METODO PER OTTENERE LA LISTA DELLE NOTE DI UN CLIENTE DAL DB
-		List<Nota> note= new ArrayList<Nota>();
+		List<Nota> note= new ArrayList<>();
 		try {
 			Connection conn = ConnectionFactory.getConnection();
 			CallableStatement cs = conn.prepareCall("{call lista_note(?)}");

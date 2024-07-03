@@ -18,7 +18,7 @@ public class MostraClientiDAO implements GenericProcedureDAO<List<Cliente>>{
 
 	@Override
 	public List<Cliente> execute(Object... params) throws DAOException{  //METODO PER OTTENERE LA LISTA DEI CLIENTI DAL DB
-		List<Cliente> clienti= new ArrayList<Cliente>();
+		List<Cliente> clienti= new ArrayList<>();
 		try {
 			Connection conn = ConnectionFactory.getConnection();
 			CallableStatement cs = conn.prepareCall("{call mostra_clienti()}");
