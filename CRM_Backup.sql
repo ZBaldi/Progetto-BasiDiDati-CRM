@@ -39,9 +39,11 @@ CREATE TABLE IF NOT EXISTS `appuntamento` (
   CONSTRAINT `CodiceOfferta_appuntamento` FOREIGN KEY (`CodiceOfferta`) REFERENCES `nota` (`CodiceOfferta`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dump dei dati della tabella crm.appuntamento: ~1 rows (circa)
+-- Dump dei dati della tabella crm.appuntamento: ~3 rows (circa)
 INSERT INTO `appuntamento` (`CodiceFiscaleCliente`, `CodiceOfferta`, `Sede`, `Data`, `Orario`) VALUES
-	('BLDVLR02P20H501L', 'PGB456', 'PALAZZO A', '2024-07-05', '14:30:00');
+	('BLDVLR02P20H503F', 'PGB456', 'PALAZZO A', '2024-07-05', '14:30:00'),
+	('GLLLLV15B41L616N', 'PGB456', 'PALAZZO C', '2024-12-12', '12:00:00'),
+	('PSQKNM33A01B565J', 'PASG30', 'PALAZZO B', '2024-07-11', '08:30:00');
 
 -- Dump della struttura di tabella crm.cliente
 CREATE TABLE IF NOT EXISTS `cliente` (
@@ -57,10 +59,9 @@ CREATE TABLE IF NOT EXISTS `cliente` (
   PRIMARY KEY (`CodiceFiscale`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dump dei dati della tabella crm.cliente: ~11 rows (circa)
+-- Dump dei dati della tabella crm.cliente: ~10 rows (circa)
 INSERT INTO `cliente` (`CodiceFiscale`, `Nome`, `Cognome`, `Indirizzo`, `Città`, `Provincia`, `Paese`, `DataDiNascita`, `DataDiRegistrazione`) VALUES
-	('BLDVLR02P20H501L', 'VALERIO', 'BALDAZZI', 'VIA ERICE 60 00133', 'ROMA', 'RM', 'ITALIA', '2002-09-20', '2024-06-30'),
-	('BRGNTL21R01F114V', 'NERTILD', 'BORGHI', 'VIA FURIA 77 12020', 'MELLE', 'CN', 'ITALIA', '2021-10-01', '2024-06-29'),
+	('BLDVLR02P20H503F', 'VALERIO', 'BALDAZZI', 'VIA ANONIMA 60 00133', 'ROMA', 'RM', 'ITALIA', '2002-11-20', '2024-06-30'),
 	('BSCPCL67C01C551X', 'PIERCLAUDIO', 'BISCOTTI', 'VIA DEGLI INGEGNERI 89 27050', 'CERVESINA', 'PV', 'ITALIA', '1967-03-01', '2024-06-29'),
 	('GLLLLV15B41L616N', 'ILARIA LIVIA', 'GALLELLO', 'VIA FREDDA 80 00133', 'ROMA', 'RM', 'ITALIA', '2015-02-01', '2024-06-29'),
 	('GZLNMR73B41E241Z', 'ANNA MARIA DELFINA', 'GOZLUGOL', 'VIA ALBERTO 6  05025', 'GUARDEA', 'TR', 'ITALIA', '1973-02-01', '2024-06-29'),
@@ -70,6 +71,12 @@ INSERT INTO `cliente` (`CodiceFiscale`, `Nome`, `Cognome`, `Indirizzo`, `Città`
 	('RZGGLB73H01E991A', 'GIULIO LIBERO', 'REZAGOLI', 'VIA DEI RAGAZZI 71 88040', 'MARTIRANO LOMBARDO', 'CZ', 'ITALIA', '1973-06-01', '2024-06-29'),
 	('STRGNZ54A01L475S', 'IGNAZIO', 'STRADELLA', 'VIA BELLA 1 65020', 'TURRIVALIGNANI', 'PE', 'ITALIA', '1954-01-01', '2024-06-29'),
 	('ZUODNN08S01B675R', 'ADRIANO ENEA', 'ZUO', 'VIA BRUTTA 33 09012', 'CAPOTERRA', 'CA', 'ITALIA', '2008-11-01', '2024-06-29');
+
+-- Dump della struttura di vista crm.clienti_eliminabili
+-- Creazione di una tabella temporanea per risolvere gli errori di dipendenza della vista
+CREATE TABLE `clienti_eliminabili` (
+	`CodiceFiscale` CHAR(16) NOT NULL COLLATE 'utf8mb4_general_ci'
+) ENGINE=MyISAM;
 
 -- Dump della struttura di vista crm.clienti_in_ordine_di_contatto
 -- Creazione di una tabella temporanea per risolvere gli errori di dipendenza della vista
@@ -85,10 +92,10 @@ CREATE TABLE `clienti_in_ordine_di_contatto` (
 	`DataDiRegistrazione` DATE NOT NULL
 ) ENGINE=MyISAM;
 
--- Dump della struttura di procedura crm.elimina_offerte
+-- Dump della struttura di procedura crm.elimina_cliente
 DELIMITER //
-CREATE PROCEDURE `elimina_offerte`(
-	IN `codiceOfferta` CHAR(6)
+CREATE PROCEDURE `elimina_cliente`(
+	IN `cf` CHAR(16)
 )
 BEGIN
 	DECLARE EXIT HANDLER FOR SQLEXCEPTION
@@ -96,14 +103,44 @@ BEGIN
 		ROLLBACK;
 		RESIGNAL;
 	END;
-   SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+	
+   SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
    START TRANSACTION;
-   IF (SELECT COUNT(*) FROM `offerte_scadute_non_accettate` 
-         	WHERE `CodiceOfferta`= codiceOfferta)>0 THEN
-			DELETE FROM `offerta` WHERE `CodiceOfferta`= codiceOfferta;
+   IF (SELECT COUNT(*) 
+	    FROM `clienti_eliminabili` 
+       WHERE `CodiceFiscale`= cf)>0 THEN
+				DELETE FROM `cliente` WHERE `CodiceFiscale`= cf;
+   ELSEIF  (SELECT COUNT(*) 
+	   		 FROM `cliente` 
+       		 WHERE `CodiceFiscale`= cf)>0 THEN
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Il cliente ha informazioni associate importanti , quindi non può essere ancora eliminato!';
+	ELSE
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Il cliente non è registrato nella base di dati';
+   END IF;
+   COMMIT;
+END//
+DELIMITER ;
+
+-- Dump della struttura di procedura crm.elimina_offerte
+DELIMITER //
+CREATE PROCEDURE `elimina_offerte`(
+	IN `codice` CHAR(6)
+)
+BEGIN
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION
+	BEGIN
+		ROLLBACK;
+		RESIGNAL;
+	END;
+	
+   SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
+   START TRANSACTION;
+   IF (SELECT COUNT(*) 
+	    FROM `offerte_scadute_non_accettate` 
+       WHERE `CodiceOfferta`= codice)>0 THEN
+				DELETE FROM `offerta` WHERE `CodiceOfferta`= codice;
    ELSE 
-		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Offerta non scaduta o 
-         ancora attiva dai clienti.';
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'L offerta è ancora presente nelle note o nelle offerte accettate , quindi non può essere ancora eliminata!';
    END IF;
    COMMIT;
 END//
@@ -118,12 +155,10 @@ CREATE TABLE IF NOT EXISTS `email` (
   CONSTRAINT `CF_Email` FOREIGN KEY (`CodiceFiscaleCliente`) REFERENCES `cliente` (`CodiceFiscale`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dump dei dati della tabella crm.email: ~14 rows (circa)
+-- Dump dei dati della tabella crm.email: ~12 rows (circa)
 INSERT INTO `email` (`NomeEmail`, `CodiceFiscaleCliente`) VALUES
-	('valbald02@gmail.com', 'BLDVLR02P20H501L'),
-	('valerio.baldazzi@students.uniroma2.eu', 'BLDVLR02P20H501L'),
-	('borgata@gmail.com', 'BRGNTL21R01F114V'),
-	('borghi@gmail.com', 'BRGNTL21R01F114V'),
+	('valbald02@gmail.com', 'BLDVLR02P20H503F'),
+	('valerio.baldazzi@students.uniroma2.eu', 'BLDVLR02P20H503F'),
 	('pierclaudio@gmail.com', 'BSCPCL67C01C551X'),
 	('ila@gmail.com', 'GLLLLV15B41L616N'),
 	('lavi@gmail.com', 'GZLNMR73B41E241Z'),
@@ -360,18 +395,27 @@ CREATE TABLE IF NOT EXISTS `nota` (
   KEY `CodOfferta_nota_idx` (`CodiceOfferta`),
   KEY `DataDiModifica_nota_idx` (`DataDiModifica`),
   CONSTRAINT `CF_nota` FOREIGN KEY (`CodiceFiscaleCliente`) REFERENCES `cliente` (`CodiceFiscale`) ON UPDATE CASCADE,
-  CONSTRAINT `CodOfferta_nota` FOREIGN KEY (`CodiceOfferta`) REFERENCES `offerta` (`CodiceOfferta`) ON UPDATE CASCADE
+  CONSTRAINT `CodiceOfferta_nota` FOREIGN KEY (`CodiceOfferta`) REFERENCES `offerta` (`CodiceOfferta`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dump dei dati della tabella crm.nota: ~2 rows (circa)
+-- Dump dei dati della tabella crm.nota: ~9 rows (circa)
 INSERT INTO `nota` (`CodiceFiscaleCliente`, `CodiceOfferta`, `Esito`, `Operatore`, `DataDiModifica`) VALUES
-	('BLDVLR02P20H501L', 'PGB456', 'È INTERESSATO, MA VORREBBE CONFRONTARSI DI PERSONA IN AZIENDA.', 'OPERATORE1', '2024-07-01'),
-	('BLDVLR02P20H501L', 'STP369', 'AL CLIENTE NON INTERESSA QUESTA OFFERTA.', 'OPERATORE1', '2024-06-30');
+	('BLDVLR02P20H503F', 'PGB456', 'È INTERESSATO, MA VORREBBE CONFRONTARSI DI PERSONA IN AZIENDA.', 'OPERATORE1', '2024-07-01'),
+	('BLDVLR02P20H503F', 'STP369', 'AL CLIENTE NON INTERESSA QUESTA OFFERTA.', 'OPERATORE1', '2024-06-30'),
+	('BSCPCL67C01C551X', 'FMEI24', 'NON È INTERESSATO.', 'OPERATORE1', '2024-07-02'),
+	('GLLLLV15B41L616N', 'PGB456', 'HA RICHIESTO UN APPUNTAMENTO, RISULTA POCO INTERESSATO PERÒ.', 'OPERATORE1', '2024-07-02'),
+	('GZLNMR73B41E241Z', 'GPI246', 'HA ACCETTATO L\'OFFERTA, HA RICHIESTO DI CONTATTARLA PIÙ SPESSO!', 'OPERATORE1', '2024-07-02'),
+	('PSQKNM33A01B565J', 'PASG30', 'È INDECISO, HA RICHIESTO UN APPUNTAMENTO', 'OPERATORE1', '2024-07-02'),
+	('RZGGLB73H01E991A', 'CLN789', 'NON È INTERESSATO.', 'OPERATORE1', '2024-07-03'),
+	('STRGNZ54A01L475S', 'MSIA25', 'HA ACCETTATO L\'OFFERTA!', 'OPERATORE1', '2024-07-02'),
+	('ZUODNN08S01B675R', 'CAS147', 'HA ADERITO ALL\'OFFERTA.', 'OPERATORE1', '2024-07-02');
 
 -- Dump della struttura di evento crm.Note_Cleanup
 DELIMITER //
 CREATE EVENT `Note_Cleanup` ON SCHEDULE EVERY 1 DAY STARTS '2024-06-29 00:00:00' ON COMPLETION PRESERVE ENABLE DO DELETE FROM `nota`
-		WHERE `DataDiModifica` <   DATE_SUB(CURRENT_DATE,  INTERVAL 5 YEAR)//
+		WHERE `DataDiModifica` <   DATE_SUB(CURRENT_DATE,  INTERVAL 5 YEAR) 
+				AND (`CodiceFiscaleCliente`,`CodiceOfferta`) NOT IN (SELECT `CodiceFiscaleCliente`,`CodiceOfferta`
+																					  FROM `offertaaccettata`)//
 DELIMITER ;
 
 -- Dump della struttura di tabella crm.offerta
@@ -384,13 +428,12 @@ CREATE TABLE IF NOT EXISTS `offerta` (
   KEY `DataDiScadenza_idx` (`DataDiScadenza`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dump dei dati della tabella crm.offerta: ~15 rows (circa)
+-- Dump dei dati della tabella crm.offerta: ~19 rows (circa)
 INSERT INTO `offerta` (`CodiceOfferta`, `NomeOfferta`, `Descrizione`, `DataDiScadenza`) VALUES
 	('ATS654', 'ASSISTENZA TECNICA', 'SERVIZI DI ASSISTENZA TECNICA SPECIALIZZATA PER HARDWARE E SOFTWARE AZIENDALI, CON SUPPORTO REMOTO E IN LOCO.', '2025-04-15'),
 	('CAS147', 'CONSULENZA AMBIENTALE', 'SERVIZI DI CONSULENZA PER LA SOSTENIBILITÀ AMBIENTALE, INCLUSE VALUTAZIONI DI IMPATTO AMBIENTALE E CERTIFICAZIONI.', '2025-03-05'),
 	('CFS123', 'CONSULENZA FINANZIARIA', 'OFFERTA PER SERVIZI DI CONSULENZA FINANZIARIA STRATEGICA PER LA GESTIONE DEGLI INVESTIMENTI E DELLE RISORSE AZIENDALI.', '2025-02-28'),
 	('CLN789', 'CONSULENZA LEGALE', 'CONTRATTO PER SERVIZI DI CONSULENZA LEGALE E SUPPORTO NORMATIVO PER CONFORMITÀ ALLE LEGGI VIGENTI.', '2025-03-10'),
-	('CMD321', 'CONSULENZA MARKETING', 'SERVIZI DI CONSULENZA PER STRATEGIE DI MARKETING DIGITALE, INCLUSA GESTIONE DI CAMPAGNE PUBBLICITARIE ONLINE.', '2020-12-20'),
 	('CRU135', 'CONSULENZA RISORSE UMANE', 'SERVIZI DI CONSULENZA PER LA GESTIONE DELLE RISORSE UMANE, INCLUSA SELEZIONE E FORMAZIONE DEL PERSONALE.', '2024-08-25'),
 	('FAU258', 'FORNITURA ARREDI UFFICIO', 'CONTRATTO PER LA FORNITURA DI ARREDI E MOBILI PER UFFICI, CON OPZIONI DI PERSONALIZZAZIONE E INSTALLAZIONE.', '2025-05-20'),
 	('FMEI24', 'FORNITURA ELETTRICA', 'CONTRATTO PER LA FORNITURA DI MATERIALE ELETTRICO DESTINATO ALL\'USO INDUSTRIALE, INCLUSE APPARECCHIATURE DI SICUREZZA.', '2024-12-31'),
@@ -398,8 +441,13 @@ INSERT INTO `offerta` (`CodiceOfferta`, `NomeOfferta`, `Descrizione`, `DataDiSca
 	('FSG987', 'FORNITURA SOFTWARE', 'OFFERTA PER LA FORNITURA E INSTALLAZIONE DI SOFTWARE GESTIONALE PER LA GESTIONE DELLE OPERAZIONI AZIENDALI.', '2024-09-20'),
 	('GPI246', 'GESTIONE PROGETTI IT', 'OFFERTA PER LA GESTIONE COMPLETA DI PROGETTI IT, DALLA PIANIFICAZIONE ALL\'IMPLEMENTAZIONE E MANUTENZIONE.', '2024-10-10'),
 	('MSIA25', 'MANUTENZIONI SISTEMI', 'SERVIZIO DI MANUTENZIONE PERIODICA PER I SISTEMI INFORMATICI AZIENDALI, INCLUSA ASSISTENZA TECNICA E AGGIORNAMENTI SOFTWARE.', '2025-01-15'),
+	('OSAU20', 'SCONTO ARREDI UFFICIO', 'SCONTO DEL 20% SU TUTTI GLI ORDINI DI ARREDI E MOBILI PER UFFICI EFFETTUATI ENTRO LA FINE DEL MESE.', '2024-06-30'),
 	('OSFH20', 'SCONTO FORNITURA HARDWARE', 'PROMOZIONE SPECIALE CON SCONTO DEL 20% SULLA FORNITURA DI HARDWARE AZIENDALE, INCLUSI COMPUTER, STAMPANTI E ACCESSORI.', '2024-07-15'),
+	('PASG30', 'ABBONAMENTO SOFTWARE GESTIONALE', 'OFFERTA CON SCONTO DEL 30% SULL\'ABBONAMENTO ANNUALE AL NOSTRO SOFTWARE GESTIONALE PER AZIENDE.', '2024-08-31'),
+	('PCSS25', 'CONSULENZA STRATEGICA', 'OFFERTA SPECIALE CON SCONTO DEL 25% SUI SERVIZI DI CONSULENZA STRATEGICA AZIENDALE PER NUOVI CLIENTI.', '2024-08-15'),
 	('PGB456', 'GRAFICA E BRANDING', 'SERVIZI DI PROGETTAZIONE GRAFICA E SVILUPPO DEL BRANDING AZIENDALE, INCLUSI LOGHI E MATERIALE PUBBLICITARIO.', '2024-11-30'),
+	('SSCI25', 'SERVIZI DI CONSULENZA IT', 'OFFERTA LIMITATA CON SCONTO DEL 25% SU TUTTI I SERVIZI DI CONSULENZA IT PER NUOVI CLIENTI.', '2024-09-10'),
+	('SSMD20', 'SERVIZI DI MARKETING DIGITALE', 'PROMOZIONE CON SCONTO DEL 20% SU TUTTI I SERVIZI DI CONSULENZA PER STRATEGIE DI MARKETING DIGITALE.', '2024-12-10'),
 	('STP369', 'SERVIZI DI TRADUZIONE', 'OFFERTA PER SERVIZI DI TRADUZIONE PROFESSIONALE PER DOCUMENTI TECNICI, LEGALI E COMMERCIALI IN PIÙ LINGUE.', '2024-12-15');
 
 -- Dump della struttura di tabella crm.offertaaccettata
@@ -415,13 +463,24 @@ CREATE TABLE IF NOT EXISTS `offertaaccettata` (
   CONSTRAINT `CodiceOfferta_OffertaAccettata` FOREIGN KEY (`CodiceOfferta`) REFERENCES `offerta` (`CodiceOfferta`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dump dei dati della tabella crm.offertaaccettata: ~0 rows (circa)
+-- Dump dei dati della tabella crm.offertaaccettata: ~3 rows (circa)
+INSERT INTO `offertaaccettata` (`CodiceOfferta`, `CodiceFiscaleCliente`, `DataDiAccettazione`, `Operatore`) VALUES
+	('CAS147', 'ZUODNN08S01B675R', '2024-07-02', 'OPERATORE1'),
+	('GPI246', 'GZLNMR73B41E241Z', '2024-07-03', 'OPERATORE1'),
+	('MSIA25', 'STRGNZ54A01L475S', '2024-07-02', 'OPERATORE1');
 
 -- Dump della struttura di evento crm.OffertaAccettata_Cleanup
 DELIMITER //
-CREATE EVENT `OffertaAccettata_Cleanup` ON SCHEDULE EVERY 1 DAY STARTS '2024-07-01 00:00:00' ON COMPLETION PRESERVE ENABLE DO DELETE FROM `offertaaccettata`
-		WHERE  `DataDiAccettazione` <   DATE_SUB(CURRENT_DATE,  INTERVAL 
-                                                                         5 YEAR)//
+CREATE EVENT `OffertaAccettata_Cleanup` ON SCHEDULE EVERY 1 DAY STARTS '2024-07-01 00:00:00' ON COMPLETION PRESERVE ENABLE DO BEGIN
+	DELETE FROM `nota`
+	WHERE (`CodiceFiscaleCliente`,`CodiceOfferta`) IN (
+    	SELECT `CodiceFiscaleCliente`,`CodiceOfferta`
+    	FROM `offertaaccettata`
+    	WHERE `DataDiAccettazione` < DATE_SUB(CURRENT_DATE, INTERVAL 5 YEAR));
+   
+	DELETE FROM `offertaaccettata`
+	WHERE `DataDiAccettazione` < DATE_SUB(CURRENT_DATE, INTERVAL 5 YEAR);
+END//
 DELIMITER ;
 
 -- Dump della struttura di vista crm.offerte_scadute_non_accettate
@@ -506,11 +565,11 @@ BEGIN
 	
 	SELECT COUNT(DISTINCT CodiceFiscaleCliente) AS Totale
 	FROM `nota`
-	WHERE (`nota`.`DataDiModifica`>dataInizio AND `nota`.`DataDiModifica`<dataFine);
+	WHERE (`nota`.`DataDiModifica`>=dataInizio AND `nota`.`DataDiModifica`<=dataFine);
 	
    SELECT CodiceFiscale,Nome,Cognome, COUNT(DataDiModifica) AS Contattato, COUNT(DataDiAccettazione) AS Accettato
    FROM `nota` JOIN `cliente` ON `nota`.`CodiceFiscaleCliente` = `cliente`.`CodiceFiscale` LEFT JOIN `offertaaccettata` ON   (`nota`.`CodiceFiscaleCliente`,`nota`.`CodiceOfferta`) = (`offertaaccettata`.`CodiceFiscaleCliente`,`offertaaccettata`.`CodiceOfferta`)
-	WHERE (`nota`.`DataDiModifica`>dataInizio AND `nota`.`DataDiModifica`<dataFine) AND ((`offertaaccettata`.`DataDiAccettazione`>dataInizio AND `offertaaccettata`.`DataDiAccettazione`<dataFine) OR (`offertaaccettata`.`DataDiAccettazione` IS NULL))
+	WHERE (`nota`.`DataDiModifica`>=dataInizio AND `nota`.`DataDiModifica`<=dataFine) AND ((`offertaaccettata`.`DataDiAccettazione`>=dataInizio AND `offertaaccettata`.`DataDiAccettazione`<=dataFine) OR (`offertaaccettata`.`DataDiAccettazione` IS NULL))
    GROUP BY `CodiceFiscale`,`Nome`,`Cognome`;
    COMMIT;
 END//
@@ -558,11 +617,9 @@ CREATE TABLE IF NOT EXISTS `telefono` (
   CONSTRAINT `CF_Telefono` FOREIGN KEY (`CodiceFiscaleCliente`) REFERENCES `cliente` (`CodiceFiscale`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dump dei dati della tabella crm.telefono: ~13 rows (circa)
+-- Dump dei dati della tabella crm.telefono: ~11 rows (circa)
 INSERT INTO `telefono` (`NumeroDiTelefono`, `CodiceFiscaleCliente`) VALUES
-	('+393474104392', 'BLDVLR02P20H501L'),
-	('+393135444408', 'BRGNTL21R01F114V'),
-	('+393318201737', 'BRGNTL21R01F114V'),
+	('+393474104392', 'BLDVLR02P20H503F'),
 	('+393364904506', 'BSCPCL67C01C551X'),
 	('+393482384857', 'GLLLLV15B41L616N'),
 	('+393499348896', 'GZLNMR73B41E241Z'),
@@ -651,6 +708,15 @@ CREATE TRIGGER `offertaaccettata_before_insert` BEFORE INSERT ON `offertaaccetta
 END//
 DELIMITER ;
 SET SQL_MODE=@OLDTMP_SQL_MODE;
+
+-- Rimozione temporanea di tabella e creazione della struttura finale della vista
+DROP TABLE IF EXISTS `clienti_eliminabili`;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `clienti_eliminabili` AS SELECT `CodiceFiscale`
+FROM `cliente`
+WHERE `CodiceFiscale` NOT IN (SELECT `CodiceFiscaleCliente`
+										FROM `nota`)
+		AND `CodiceFiscale` NOT IN (SELECT `CodiceFiscaleCliente`
+											 FROM `offertaaccettata`) ;
 
 -- Rimozione temporanea di tabella e creazione della struttura finale della vista
 DROP TABLE IF EXISTS `clienti_in_ordine_di_contatto`;
